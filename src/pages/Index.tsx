@@ -37,7 +37,6 @@ const Index = () => {
     { i: Palette, t: t.how.s1t, d: t.how.s1d },
     { i: Edit3, t: t.how.s2t, d: t.how.s2d },
     { i: Eye, t: t.how.s3t, d: t.how.s3d },
-    { i: Send, t: t.how.s4t, d: t.how.s4d },
   ];
 
   return (
