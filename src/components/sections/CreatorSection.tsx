@@ -2,8 +2,9 @@ import { useI18n } from "@/i18n/I18nContext";
 import { useState, useRef } from "react";
 import { THEMES } from "@/data/themes";
 import { MiniSitePreview, MiniSiteData } from "../MiniSitePreview";
-import { Camera, Heart, Sparkles, X } from "lucide-react";
+import { Camera, Heart, Sparkles, X, Maximize2 } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface Props {
   themeId: string;
