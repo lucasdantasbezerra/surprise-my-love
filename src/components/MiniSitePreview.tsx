@@ -116,19 +116,46 @@ export const MiniSitePreview = ({ data, compact = false }: { data: MiniSiteData;
         )}
 
         {/* Music */}
-        {data.hasMusic && data.music && (
-          <div className={`mt-5 flex items-center gap-3 rounded-2xl px-4 py-3 ${
-            isDark ? "bg-white/5 border border-white/10" : "bg-black/5 border border-black/5"
-          }`}>
-            <div className={`h-9 w-9 rounded-full grid place-items-center`} style={{ backgroundColor: theme.accentHex }}>
-              <Music className="h-4 w-4 text-white" />
+        {data.hasMusic && data.music && (() => {
+          const url = data.music.trim();
+          const yt = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([\w-]{11})/);
+          const spTrack = url.match(/open\.spotify\.com\/(?:intl-\w+\/)?track\/([\w]+)/);
+          const spOther = url.match(/open\.spotify\.com\/(?:intl-\w+\/)?(album|playlist|episode)\/([\w]+)/);
+          if (yt) {
+            return (
+              <div className="mt-5 rounded-2xl overflow-hidden aspect-video">
+                <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${yt[1]}?autoplay=0`} title="YouTube" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+              </div>
+            );
+          }
+          if (spTrack) {
+            return (
+              <div className="mt-5 rounded-2xl overflow-hidden">
+                <iframe className="w-full" style={{ height: 152 }} src={`https://open.spotify.com/embed/track/${spTrack[1]}`} allow="encrypted-media" loading="lazy" />
+              </div>
+            );
+          }
+          if (spOther) {
+            return (
+              <div className="mt-5 rounded-2xl overflow-hidden">
+                <iframe className="w-full" style={{ height: 232 }} src={`https://open.spotify.com/embed/${spOther[1]}/${spOther[2]}`} allow="encrypted-media" loading="lazy" />
+              </div>
+            );
+          }
+          return (
+            <div className={`mt-5 flex items-center gap-3 rounded-2xl px-4 py-3 ${
+              isDark ? "bg-white/5 border border-white/10" : "bg-black/5 border border-black/5"
+            }`}>
+              <div className="h-9 w-9 rounded-full grid place-items-center" style={{ backgroundColor: theme.accentHex }}>
+                <Music className="h-4 w-4 text-white" />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className={`text-xs uppercase tracking-widest ${muted}`}>♪ Nossa música</div>
+                <div className={`text-sm font-medium truncate ${theme.text}`}>{data.music}</div>
+              </div>
             </div>
-            <div className="flex-1 min-w-0">
-              <div className={`text-xs uppercase tracking-widest ${muted}`}>♪ Nossa música</div>
-              <div className={`text-sm font-medium truncate ${theme.text}`}>{data.music}</div>
-            </div>
-          </div>
-        )}
+          );
+        })()}
 
         {data.finalMessage && (
           <p className={`mt-4 text-center text-sm sm:text-base ${theme.accent}`}>
