@@ -33,11 +33,23 @@ export const LoveCounter = ({
   const seconds = Math.floor(diff / 1000) % 60;
   const minutes = Math.floor(diff / (1000 * 60)) % 60;
   const hours = Math.floor(diff / (1000 * 60 * 60)) % 24;
-  const totalDays = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const years = Math.floor(totalDays / 365);
-  const days = totalDays - years * 365;
 
-  const items = [years, days, hours, minutes, seconds];
+  // Calendar-aware years/months/days
+  let years = 0, months = 0, days = 0;
+  if (valid) {
+    years = now.getFullYear() - start.getFullYear();
+    months = now.getMonth() - start.getMonth();
+    days = now.getDate() - start.getDate();
+    if (days < 0) {
+      months -= 1;
+      const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    if (months < 0) { years -= 1; months += 12; }
+    if (years < 0) { years = 0; months = 0; days = 0; }
+  }
+
+  const items = [years, months, days, hours, minutes, seconds];
   const labels = t.counter;
 
   const sizeMap = {
@@ -47,7 +59,7 @@ export const LoveCounter = ({
   }[size];
 
   return (
-    <div className={`grid grid-cols-5 gap-2 sm:gap-3 ${className}`}>
+    <div className={`grid grid-cols-6 gap-1.5 sm:gap-2 ${className}`}>
       {items.map((v, i) => (
         <div key={i} className="text-center">
           <div className={`font-display font-bold tabular-nums ${sizeMap.num} ${accentClass ?? textClass}`}>

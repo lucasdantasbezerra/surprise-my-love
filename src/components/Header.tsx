@@ -2,15 +2,20 @@ import { useI18n } from "@/i18n/I18nContext";
 import { LanguageSelector } from "./LanguageSelector";
 import { Heart, Menu, X, ArrowRight } from "lucide-react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 interface Props {
-  onLogin: () => void;
+  onLogin?: () => void;
   onCreate: () => void;
 }
 
-export const Header = ({ onLogin, onCreate }: Props) => {
+export const Header = ({ onCreate }: Props) => {
   const { t } = useI18n();
   const [open, setOpen] = useState(false);
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const onLogin = () => navigate(user ? "/account" : "/auth");
 
   const links = [
     { href: "#themes", label: t.nav.templates },

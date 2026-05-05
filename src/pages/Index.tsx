@@ -37,7 +37,6 @@ const Index = () => {
     { i: Palette, t: t.how.s1t, d: t.how.s1d },
     { i: Edit3, t: t.how.s2t, d: t.how.s2d },
     { i: Eye, t: t.how.s3t, d: t.how.s3d },
-    { i: Send, t: t.how.s4t, d: t.how.s4d },
   ];
 
   return (
@@ -56,7 +55,7 @@ const Index = () => {
             <h1 className="mt-6 font-display text-5xl sm:text-6xl lg:text-7xl font-bold leading-[1.05] text-balance">
               {t.hero.title1}{" "}
               <span className="text-gradient-rose italic">{t.hero.titleEm}</span>{" "}
-              {t.hero.title2}
+              {t.hero.tagline}
             </h1>
             <p className="mt-6 text-lg text-foreground/65 leading-relaxed max-w-xl">{t.hero.sub}</p>
             <div className="mt-8 flex flex-wrap items-center gap-3">

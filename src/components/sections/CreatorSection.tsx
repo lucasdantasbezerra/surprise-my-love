@@ -2,8 +2,9 @@ import { useI18n } from "@/i18n/I18nContext";
 import { useState, useRef } from "react";
 import { THEMES } from "@/data/themes";
 import { MiniSitePreview, MiniSiteData } from "../MiniSitePreview";
-import { Camera, Heart, Sparkles, X } from "lucide-react";
+import { Camera, Heart, Sparkles, X, Maximize2 } from "lucide-react";
 import { toast } from "sonner";
+import { Dialog, DialogContent } from "@/components/ui/dialog";
 
 interface Props {
   themeId: string;
@@ -21,6 +22,7 @@ const MAX_PREMIUM = 8;
 export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPlan, prices }: Props) => {
   const { t } = useI18n();
   const [slug, setSlug] = useState("");
+  const [expanded, setExpanded] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const photoLimit = plan === "premium" ? MAX_PREMIUM : MAX_BASIC;
 
@@ -164,8 +166,11 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
 
           {/* Preview */}
           <div className="lg:sticky lg:top-24 self-start">
-            <div className="text-xs uppercase tracking-[0.3em] text-foreground/50 font-semibold mb-3 flex items-center gap-2">
-              <Heart className="h-3 w-3 fill-primary text-primary" /> {t.creator.preview}
+            <div className="text-xs uppercase tracking-[0.3em] text-foreground/50 font-semibold mb-3 flex items-center justify-between">
+              <span className="flex items-center gap-2"><Heart className="h-3 w-3 fill-primary text-primary" /> {t.creator.preview}</span>
+              <button onClick={() => setExpanded(true)} className="inline-flex items-center gap-1.5 normal-case tracking-normal text-xs text-foreground/70 hover:text-primary transition-colors">
+                <Maximize2 className="h-3.5 w-3.5" /> {t.creator.expand}
+              </button>
             </div>
             <div className="relative">
               <div className="absolute -inset-4 bg-gradient-rose opacity-20 blur-2xl rounded-3xl pointer-events-none" />
@@ -190,6 +195,12 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
           </div>
         </div>
       </div>
+
+      <Dialog open={expanded} onOpenChange={setExpanded}>
+        <DialogContent className="max-w-2xl p-0 bg-transparent border-0 shadow-none">
+          <MiniSitePreview data={{ ...data, themeId, hasMusic: plan === "premium" && !!data.music, hasAnimations: plan === "premium" }} />
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
