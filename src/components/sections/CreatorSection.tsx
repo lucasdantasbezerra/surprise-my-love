@@ -22,6 +22,7 @@ const MAX_PREMIUM = 8;
 export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPlan, prices }: Props) => {
   const { t } = useI18n();
   const [slug, setSlug] = useState("");
+  const [expanded, setExpanded] = useState(false);
   const fileRef = useRef<HTMLInputElement>(null);
   const photoLimit = plan === "premium" ? MAX_PREMIUM : MAX_BASIC;
 
