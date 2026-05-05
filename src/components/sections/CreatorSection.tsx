@@ -195,6 +195,12 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
           </div>
         </div>
       </div>
+
+      <Dialog open={expanded} onOpenChange={setExpanded}>
+        <DialogContent className="max-w-2xl p-0 bg-transparent border-0 shadow-none">
+          <MiniSitePreview data={{ ...data, themeId, hasMusic: plan === "premium" && !!data.music, hasAnimations: plan === "premium" }} />
+        </DialogContent>
+      </Dialog>
     </section>
   );
 };
