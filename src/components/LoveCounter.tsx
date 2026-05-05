@@ -59,7 +59,7 @@ export const LoveCounter = ({
   }[size];
 
   return (
-    <div className={`grid grid-cols-5 gap-2 sm:gap-3 ${className}`}>
+    <div className={`grid grid-cols-6 gap-1.5 sm:gap-2 ${className}`}>
       {items.map((v, i) => (
         <div key={i} className="text-center">
           <div className={`font-display font-bold tabular-nums ${sizeMap.num} ${accentClass ?? textClass}`}>
