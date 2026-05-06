@@ -25,7 +25,8 @@ const LovePageView = () => {
         const imgs = await getImages(r.id);
         if (!alive) return;
         setRow(r);
-        setPhotos(imgs.map((i) => i.image_url));
+        const resolved = await Promise.all(imgs.map((i) => resolveImageUrl(i.image_url)));
+        setPhotos(resolved);
       } catch {
         setNotFound(true);
       } finally {
