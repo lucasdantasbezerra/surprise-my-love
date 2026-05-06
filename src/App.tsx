@@ -27,6 +27,7 @@ const App = () => (
               <Route path="/auth" element={<Auth />} />
               <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/account" element={<Account />} />
+              <Route path="/p/:slug" element={<LovePageView />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </AuthProvider>
