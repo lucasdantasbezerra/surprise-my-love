@@ -1,10 +1,13 @@
 import { useI18n } from "@/i18n/I18nContext";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { THEMES } from "@/data/themes";
 import { MiniSitePreview, MiniSiteData } from "../MiniSitePreview";
-import { Camera, Heart, Sparkles, X, Maximize2 } from "lucide-react";
+import { Camera, Heart, Sparkles, X, Maximize2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useAuth } from "@/hooks/useAuth";
+import { useLovePages } from "@/hooks/useLovePages";
 
 interface Props {
   themeId: string;
