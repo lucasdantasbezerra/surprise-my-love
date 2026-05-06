@@ -10,6 +10,7 @@ import NotFound from "./pages/NotFound.tsx";
 import Auth from "./pages/Auth.tsx";
 import ResetPassword from "./pages/ResetPassword.tsx";
 import Account from "./pages/Account.tsx";
+import LovePageView from "./pages/LovePageView.tsx";
 
 const queryClient = new QueryClient();
 
