@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.enforce_plan_type_payment() FROM PUBLIC, anon, authenticated;
