@@ -50,11 +50,32 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
 
   const removePhoto = (i: number) => update("photos", data.photos.filter((_, idx) => idx !== i));
 
-  const finalize = () => {
-    toast.success("Pronto! Pagamento será integrado em breve com Stripe e Pix.", {
-      description: `Plano ${plan === "premium" ? "Premium" : "Básico"} · ${plan === "premium" ? prices.premium : prices.basic}`,
-    });
+  const persist = async (publish: boolean) => {
+    if (!user) {
+      toast.info("Faça login para salvar sua página");
+      navigate("/auth");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { row, photos } = await save({ userId: user.id, pageId, slug: slug || undefined, data: { ...data, themeId }, plan, publish });
+      setPageId(row.id);
+      if (row.slug) setSlug(row.slug);
+      // Replace blob URLs with persistent ones
+      setData({ ...data, themeId, photos });
+      toast.success(publish ? "Página publicada!" : "Rascunho salvo", {
+        description: publish && row.slug ? `${window.location.origin}/p/${row.slug}` : undefined,
+      });
+      if (publish) navigate("/account");
+    } catch (e: any) {
+      toast.error(e.message || "Erro ao salvar");
+    } finally {
+      setBusy(false);
+    }
   };
+
+  const finalize = () => persist(true);
+  const saveDraft = () => persist(false);
 
   const inputBase =
     "w-full px-4 py-3 rounded-xl border border-border bg-background/60 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all placeholder:text-foreground/40";
