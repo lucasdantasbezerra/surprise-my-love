@@ -10,10 +10,12 @@ import { toast } from "sonner";
 const Account = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
+  const { list, remove } = useLovePages();
   const [displayName, setDisplayName] = useState("");
-  const [slug, setSlug] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [pages, setPages] = useState<LovePageRow[]>([]);
+  const [activeSlug, setActiveSlug] = useState<string>("");
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth", { replace: true });
@@ -24,8 +26,12 @@ const Account = () => {
     supabase.from("profiles").select("display_name").eq("user_id", user.id).maybeSingle().then(({ data }) => {
       if (data?.display_name) setDisplayName(data.display_name);
     });
-    setSlug(user.email?.split("@")[0]?.toLowerCase().replace(/[^a-z0-9-]/g, "") || "minha-pagina");
-  }, [user]);
+    list(user.id).then((rows) => {
+      setPages(rows);
+      const firstPublished = rows.find((r) => r.is_published && r.slug);
+      if (firstPublished?.slug) setActiveSlug(firstPublished.slug);
+    }).catch(() => {});
+  }, [user, list]);
 
   const pageUrl = `${window.location.origin}/p/${slug}`;
 
