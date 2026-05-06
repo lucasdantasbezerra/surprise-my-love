@@ -14,28 +14,176 @@ export type Database = {
   }
   public: {
     Tables: {
+      love_page_images: {
+        Row: {
+          created_at: string
+          id: string
+          image_url: string
+          love_page_id: string
+          position: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_url: string
+          love_page_id: string
+          position?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_url?: string
+          love_page_id?: string
+          position?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "love_page_images_love_page_id_fkey"
+            columns: ["love_page_id"]
+            isOneToOne: false
+            referencedRelation: "love_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      love_pages: {
+        Row: {
+          cover_image: string | null
+          created_at: string
+          expires_at: string | null
+          final_message: string | null
+          id: string
+          is_published: boolean
+          main_message: string | null
+          music_url: string | null
+          plan_type: string
+          qr_code_url: string | null
+          recipient_name: string | null
+          relationship_date: string | null
+          slug: string | null
+          theme: string
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          cover_image?: string | null
+          created_at?: string
+          expires_at?: string | null
+          final_message?: string | null
+          id?: string
+          is_published?: boolean
+          main_message?: string | null
+          music_url?: string | null
+          plan_type?: string
+          qr_code_url?: string | null
+          recipient_name?: string | null
+          relationship_date?: string | null
+          slug?: string | null
+          theme?: string
+          title?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          cover_image?: string | null
+          created_at?: string
+          expires_at?: string | null
+          final_message?: string | null
+          id?: string
+          is_published?: boolean
+          main_message?: string | null
+          music_url?: string | null
+          plan_type?: string
+          qr_code_url?: string | null
+          recipient_name?: string | null
+          relationship_date?: string | null
+          slug?: string | null
+          theme?: string
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      payments: {
+        Row: {
+          amount: number | null
+          created_at: string
+          currency: string | null
+          id: string
+          love_page_id: string | null
+          payment_provider: string | null
+          payment_status: string
+          plan_type: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          love_page_id?: string | null
+          payment_provider?: string | null
+          payment_status?: string
+          plan_type?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number | null
+          created_at?: string
+          currency?: string | null
+          id?: string
+          love_page_id?: string | null
+          payment_provider?: string | null
+          payment_status?: string
+          plan_type?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "payments_love_page_id_fkey"
+            columns: ["love_page_id"]
+            isOneToOne: false
+            referencedRelation: "love_pages"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           avatar_url: string | null
+          country: string | null
           created_at: string
+          currency: string | null
           display_name: string | null
+          email: string | null
           id: string
+          language: string | null
           updated_at: string
           user_id: string
         }
         Insert: {
           avatar_url?: string | null
+          country?: string | null
           created_at?: string
+          currency?: string | null
           display_name?: string | null
+          email?: string | null
           id?: string
+          language?: string | null
           updated_at?: string
           user_id: string
         }
         Update: {
           avatar_url?: string | null
+          country?: string | null
           created_at?: string
+          currency?: string | null
           display_name?: string | null
+          email?: string | null
           id?: string
+          language?: string | null
           updated_at?: string
           user_id?: string
         }
