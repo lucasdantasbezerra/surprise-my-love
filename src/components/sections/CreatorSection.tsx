@@ -184,13 +184,23 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
               </div>
             </div>
 
-            <button
-              onClick={finalize}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-rose text-primary-foreground px-6 py-4 text-base font-semibold shadow-rose hover:scale-[1.02] transition-transform"
-            >
-              <Sparkles className="h-4 w-4" />
-              {t.creator.finalize}
-            </button>
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
+              <button
+                onClick={finalize}
+                disabled={busy}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-rose text-primary-foreground px-6 py-4 text-base font-semibold shadow-rose hover:scale-[1.02] transition-transform disabled:opacity-60"
+              >
+                {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                {t.creator.finalize}
+              </button>
+              <button
+                onClick={saveDraft}
+                disabled={busy}
+                className="rounded-xl border border-border bg-background px-5 py-4 text-sm font-semibold hover:bg-accent transition-colors disabled:opacity-60"
+              >
+                Salvar rascunho
+              </button>
+            </div>
           </div>
 
           {/* Preview */}
