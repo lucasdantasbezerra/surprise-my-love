@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { Loader2, Heart } from "lucide-react";
 import { MiniSitePreview, MiniSiteData } from "@/components/MiniSitePreview";
-import { useLovePages, LovePageRow } from "@/hooks/useLovePages";
+import { useLovePages, LovePageRow, resolveImageUrl } from "@/hooks/useLovePages";
 
 const LovePageView = () => {
   const { slug = "" } = useParams();
