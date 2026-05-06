@@ -1,10 +1,13 @@
 import { useI18n } from "@/i18n/I18nContext";
 import { useState, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { THEMES } from "@/data/themes";
 import { MiniSitePreview, MiniSiteData } from "../MiniSitePreview";
-import { Camera, Heart, Sparkles, X, Maximize2 } from "lucide-react";
+import { Camera, Heart, Sparkles, X, Maximize2, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { useAuth } from "@/hooks/useAuth";
+import { useLovePages } from "@/hooks/useLovePages";
 
 interface Props {
   themeId: string;
@@ -21,8 +24,13 @@ const MAX_PREMIUM = 8;
 
 export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPlan, prices }: Props) => {
   const { t } = useI18n();
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { save } = useLovePages();
   const [slug, setSlug] = useState("");
   const [expanded, setExpanded] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [pageId, setPageId] = useState<string | undefined>();
   const fileRef = useRef<HTMLInputElement>(null);
   const photoLimit = plan === "premium" ? MAX_PREMIUM : MAX_BASIC;
 
@@ -42,11 +50,32 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
 
   const removePhoto = (i: number) => update("photos", data.photos.filter((_, idx) => idx !== i));
 
-  const finalize = () => {
-    toast.success("Pronto! Pagamento será integrado em breve com Stripe e Pix.", {
-      description: `Plano ${plan === "premium" ? "Premium" : "Básico"} · ${plan === "premium" ? prices.premium : prices.basic}`,
-    });
+  const persist = async (publish: boolean) => {
+    if (!user) {
+      toast.info("Faça login para salvar sua página");
+      navigate("/auth");
+      return;
+    }
+    setBusy(true);
+    try {
+      const { row, photos } = await save({ userId: user.id, pageId, slug: slug || undefined, data: { ...data, themeId }, plan, publish });
+      setPageId(row.id);
+      if (row.slug) setSlug(row.slug);
+      // Replace blob URLs with persistent ones
+      setData({ ...data, themeId, photos });
+      toast.success(publish ? "Página publicada!" : "Rascunho salvo", {
+        description: publish && row.slug ? `${window.location.origin}/p/${row.slug}` : undefined,
+      });
+      if (publish) navigate("/account");
+    } catch (e: any) {
+      toast.error(e.message || "Erro ao salvar");
+    } finally {
+      setBusy(false);
+    }
   };
+
+  const finalize = () => persist(true);
+  const saveDraft = () => persist(false);
 
   const inputBase =
     "w-full px-4 py-3 rounded-xl border border-border bg-background/60 backdrop-blur text-sm focus:outline-none focus:ring-2 focus:ring-primary/40 focus:border-primary/40 transition-all placeholder:text-foreground/40";
@@ -155,13 +184,23 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
               </div>
             </div>
 
-            <button
-              onClick={finalize}
-              className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-rose text-primary-foreground px-6 py-4 text-base font-semibold shadow-rose hover:scale-[1.02] transition-transform"
-            >
-              <Sparkles className="h-4 w-4" />
-              {t.creator.finalize}
-            </button>
+            <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto] gap-2">
+              <button
+                onClick={finalize}
+                disabled={busy}
+                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-rose text-primary-foreground px-6 py-4 text-base font-semibold shadow-rose hover:scale-[1.02] transition-transform disabled:opacity-60"
+              >
+                {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
+                {t.creator.finalize}
+              </button>
+              <button
+                onClick={saveDraft}
+                disabled={busy}
+                className="rounded-xl border border-border bg-background px-5 py-4 text-sm font-semibold hover:bg-accent transition-colors disabled:opacity-60"
+              >
+                Salvar rascunho
+              </button>
+            </div>
           </div>
 
           {/* Preview */}

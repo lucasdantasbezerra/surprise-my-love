@@ -2,17 +2,20 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Heart, LogOut, QrCode as QrIcon, Link as LinkIcon, Lock, Save, Loader2, ArrowLeft } from "lucide-react";
+import { useLovePages, LovePageRow } from "@/hooks/useLovePages";
+import { Heart, LogOut, QrCode as QrIcon, Link as LinkIcon, Lock, Save, Loader2, ArrowLeft, Trash2, ExternalLink } from "lucide-react";
 import { QRCodeCanvas } from "qrcode.react";
 import { toast } from "sonner";
 
 const Account = () => {
   const navigate = useNavigate();
   const { user, loading, signOut } = useAuth();
+  const { list, remove } = useLovePages();
   const [displayName, setDisplayName] = useState("");
-  const [slug, setSlug] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [busy, setBusy] = useState(false);
+  const [pages, setPages] = useState<LovePageRow[]>([]);
+  const [activeSlug, setActiveSlug] = useState<string>("");
 
   useEffect(() => {
     if (!loading && !user) navigate("/auth", { replace: true });
@@ -23,10 +26,23 @@ const Account = () => {
     supabase.from("profiles").select("display_name").eq("user_id", user.id).maybeSingle().then(({ data }) => {
       if (data?.display_name) setDisplayName(data.display_name);
     });
-    setSlug(user.email?.split("@")[0]?.toLowerCase().replace(/[^a-z0-9-]/g, "") || "minha-pagina");
-  }, [user]);
+    list(user.id).then((rows) => {
+      setPages(rows);
+      const firstPublished = rows.find((r) => r.is_published && r.slug);
+      if (firstPublished?.slug) setActiveSlug(firstPublished.slug);
+    }).catch(() => {});
+  }, [user, list]);
 
-  const pageUrl = `${window.location.origin}/p/${slug}`;
+  const pageUrl = activeSlug ? `${window.location.origin}/p/${activeSlug}` : "";
+
+  const removePage = async (id: string) => {
+    if (!confirm("Excluir esta página?")) return;
+    try {
+      await remove(id);
+      setPages((p) => p.filter((x) => x.id !== id));
+      toast.success("Página excluída");
+    } catch (e: any) { toast.error(e.message); }
+  };
 
   const saveProfile = async () => {
     if (!user) return;
@@ -48,7 +64,7 @@ const Account = () => {
     const canvas = document.querySelector<HTMLCanvasElement>("#account-qr canvas");
     if (!canvas) return;
     const link = document.createElement("a");
-    link.download = `${slug}-qrcode.png`;
+    link.download = `${activeSlug || "minha-pagina"}-qrcode.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
   };
@@ -72,15 +88,44 @@ const Account = () => {
         <section className="rounded-3xl bg-card border border-border p-6 shadow-soft">
           <h2 className="font-display text-xl font-bold flex items-center gap-2"><QrIcon className="h-5 w-5 text-primary" /> Sua página</h2>
           <p className="text-sm text-foreground/60 mt-1">Compartilhe o link ou imprima o QR Code para fazer a surpresa.</p>
-          <div id="account-qr" className="mt-5 grid place-items-center bg-white rounded-2xl p-6">
-            <QRCodeCanvas value={pageUrl} size={180} fgColor="#0a0a0a" />
-          </div>
-          <div className="mt-4 flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 text-sm">
-            <LinkIcon className="h-4 w-4 text-foreground/50" />
-            <input readOnly value={pageUrl} className="flex-1 bg-transparent focus:outline-none text-foreground/80" />
-            <button onClick={() => { navigator.clipboard.writeText(pageUrl); toast.success("Link copiado"); }} className="text-xs font-semibold text-primary">Copiar</button>
-          </div>
-          <button onClick={downloadQR} className="mt-3 w-full rounded-xl bg-foreground text-background py-3 text-sm font-semibold hover:opacity-90">Baixar QR Code para imprimir</button>
+
+          {pages.length > 0 && (
+            <div className="mt-4 space-y-2">
+              {pages.map((p) => (
+                <div key={p.id} className={`flex items-center gap-2 rounded-xl border p-3 text-sm ${activeSlug && p.slug === activeSlug ? "border-primary bg-primary/5" : "border-border bg-background"}`}>
+                  <button onClick={() => p.slug && setActiveSlug(p.slug)} className="flex-1 text-left">
+                    <div className="font-medium truncate">{p.title || "Sem título"}</div>
+                    <div className="text-xs text-foreground/50">
+                      {p.is_published && p.slug ? `/p/${p.slug}` : "Rascunho"} · {p.plan_type}
+                    </div>
+                  </button>
+                  {p.is_published && p.slug && (
+                    <a href={`/p/${p.slug}`} target="_blank" rel="noreferrer" className="p-1.5 text-foreground/60 hover:text-primary"><ExternalLink className="h-4 w-4" /></a>
+                  )}
+                  <button onClick={() => removePage(p.id)} className="p-1.5 text-foreground/60 hover:text-destructive"><Trash2 className="h-4 w-4" /></button>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {pageUrl ? (
+            <>
+              <div id="account-qr" className="mt-5 grid place-items-center bg-white rounded-2xl p-6">
+                <QRCodeCanvas value={pageUrl} size={180} fgColor="#0a0a0a" />
+              </div>
+              <div className="mt-4 flex items-center gap-2 rounded-xl border border-border bg-background px-3 py-2 text-sm">
+                <LinkIcon className="h-4 w-4 text-foreground/50" />
+                <input readOnly value={pageUrl} className="flex-1 bg-transparent focus:outline-none text-foreground/80" />
+                <button onClick={() => { navigator.clipboard.writeText(pageUrl); toast.success("Link copiado"); }} className="text-xs font-semibold text-primary">Copiar</button>
+              </div>
+              <button onClick={downloadQR} className="mt-3 w-full rounded-xl bg-foreground text-background py-3 text-sm font-semibold hover:opacity-90">Baixar QR Code para imprimir</button>
+            </>
+          ) : (
+            <div className="mt-5 rounded-2xl border border-dashed border-border p-6 text-center text-sm text-foreground/60">
+              Você ainda não publicou nenhuma página.<br />
+              <Link to="/#creator" className="text-primary font-semibold mt-2 inline-block">Criar minha página →</Link>
+            </div>
+          )}
         </section>
 
         {/* Profile + Password */}
