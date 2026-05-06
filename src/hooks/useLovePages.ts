@@ -45,7 +45,18 @@ async function uploadBlobToStorage(userId: string, pageId: string, url: string, 
     upsert: false,
   });
   if (error) throw error;
-  return supabase.storage.from("love-images").getPublicUrl(path).data.publicUrl;
+  // Buckets are private — return the storage path; resolve to a signed URL on read.
+  return path;
+}
+
+export async function resolveImageUrl(pathOrUrl: string): Promise<string> {
+  if (!pathOrUrl) return pathOrUrl;
+  if (/^https?:\/\//.test(pathOrUrl) || pathOrUrl.startsWith("blob:") || pathOrUrl.startsWith("data:")) {
+    return pathOrUrl;
+  }
+  const { data, error } = await supabase.storage.from("love-images").createSignedUrl(pathOrUrl, 60 * 60);
+  if (error || !data) return pathOrUrl;
+  return data.signedUrl;
 }
 
 export const useLovePages = () => {
