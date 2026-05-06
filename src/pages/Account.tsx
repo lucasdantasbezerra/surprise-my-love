@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { Heart, LogOut, QrCode as QrIcon, Link as LinkIcon, Lock, Save, Loader2, ArrowLeft } from "lucide-react";
+import { useLovePages, LovePageRow } from "@/hooks/useLovePages";
+import { Heart, LogOut, QrCode as QrIcon, Link as LinkIcon, Lock, Save, Loader2, ArrowLeft, Trash2, ExternalLink } from "lucide-react";
 import { QRCodeCanvas } from "qrcode.react";
 import { toast } from "sonner";
 
