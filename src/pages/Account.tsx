@@ -33,7 +33,16 @@ const Account = () => {
     }).catch(() => {});
   }, [user, list]);
 
-  const pageUrl = `${window.location.origin}/p/${slug}`;
+  const pageUrl = activeSlug ? `${window.location.origin}/p/${activeSlug}` : "";
+
+  const removePage = async (id: string) => {
+    if (!confirm("Excluir esta página?")) return;
+    try {
+      await remove(id);
+      setPages((p) => p.filter((x) => x.id !== id));
+      toast.success("Página excluída");
+    } catch (e: any) { toast.error(e.message); }
+  };
 
   const saveProfile = async () => {
     if (!user) return;
