@@ -64,7 +64,7 @@ const Account = () => {
     const canvas = document.querySelector<HTMLCanvasElement>("#account-qr canvas");
     if (!canvas) return;
     const link = document.createElement("a");
-    link.download = `${slug}-qrcode.png`;
+    link.download = `${activeSlug || "minha-pagina"}-qrcode.png`;
     link.href = canvas.toDataURL("image/png");
     link.click();
   };
