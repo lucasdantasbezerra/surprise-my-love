@@ -79,10 +79,10 @@ const Index = () => {
             </div>
 
             <div className="mt-7 flex flex-wrap items-center gap-3">
-              <button onClick={scrollToCreator} className="group inline-flex items-center gap-2 rounded-full bg-gradient-rose text-primary-foreground px-7 py-4 font-semibold shadow-rose hover:scale-105 transition-transform">
+              <button onClick={scrollToCreator} className="btn-shimmer glow-rose group inline-flex items-center gap-2 rounded-full bg-gradient-rose text-primary-foreground px-7 py-4 font-semibold hover:scale-[1.03] transition-transform">
                 {t.hero.cta1} <Heart className="h-4 w-4 fill-current group-hover:scale-125 transition-transform" />
               </button>
-              <button onClick={scrollToHow} className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 backdrop-blur px-7 py-4 font-semibold hover:border-primary/40 transition-colors">
+              <button onClick={scrollToHow} className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 backdrop-blur px-7 py-4 font-semibold hover:border-primary/40 hover:bg-card transition-colors">
                 {t.hero.cta2} <ArrowRight className="h-4 w-4" />
               </button>
             </div>
@@ -155,7 +155,7 @@ const Index = () => {
           <h2 className="mt-6 font-display text-4xl sm:text-6xl font-bold leading-[1.05] text-balance">
             {t.hero.title1} <span className="italic text-gradient-sunset">{t.hero.titleEm}</span>
           </h2>
-          <button onClick={scrollToCreator} className="mt-8 inline-flex items-center gap-2 rounded-full bg-background text-foreground px-8 py-4 font-semibold hover:scale-105 transition-transform">
+          <button onClick={scrollToCreator} className="btn-shimmer mt-8 inline-flex items-center gap-2 rounded-full bg-background text-foreground px-8 py-4 font-semibold hover:scale-[1.03] transition-transform shadow-rose">
             {t.nav.cta} <ArrowRight className="h-4 w-4" />
           </button>
         </div>
