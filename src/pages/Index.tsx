@@ -11,7 +11,7 @@ import { SupportSection } from "@/components/sections/SupportSection";
 import { BenefitsSection } from "@/components/sections/BenefitsSection";
 import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { useI18n } from "@/i18n/I18nContext";
-import { Heart, ArrowRight, Sparkles, Palette, Edit3, Eye, Send, Instagram, Facebook, Youtube, Star, Users, ShieldCheck } from "lucide-react";
+import { Heart, ArrowRight, Sparkles, Palette, Edit3, Eye, Send, Instagram, Facebook, Youtube, Star, Users, ShieldCheck, Gift, Music2 } from "lucide-react";
 
 const defaultData = (): MiniSiteData => ({
   themeId: "minimal",
