@@ -18,11 +18,12 @@ export const Header = ({ onCreate }: Props) => {
   const onLogin = () => navigate(user ? "/account" : "/auth");
 
   const links = [
-    { href: "#themes", label: t.nav.templates },
     { href: "#how", label: t.nav.how },
-    { href: "#features", label: t.nav.gallery },
-    { href: "#testimonials", label: t.nav.testimonials },
+    { href: "#themes", label: t.nav.templates },
+    { href: "#benefits", label: "Benefícios" },
+    { href: "#plans", label: "Planos" },
     { href: "#faq", label: t.nav.faq },
+    { href: "#support", label: "Suporte" },
   ];
 
   return (
@@ -49,8 +50,9 @@ export const Header = ({ onCreate }: Props) => {
           </button>
           <button
             onClick={onCreate}
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold shadow-rose hover:scale-105 transition-transform"
+            className="relative inline-flex items-center gap-1.5 rounded-full bg-gradient-rose text-primary-foreground px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold shadow-rose hover:scale-105 transition-transform ring-2 ring-primary/30 ring-offset-2 ring-offset-background"
           >
+            <Heart className="h-3.5 w-3.5 fill-current" />
             <span>{t.nav.cta}</span>
             <ArrowRight className="h-3.5 w-3.5" />
           </button>

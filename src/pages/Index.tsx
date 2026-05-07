@@ -7,8 +7,9 @@ import { FaqSection } from "@/components/sections/FaqSection";
 import { LoginModal } from "@/components/LoginModal";
 import { MiniSitePreview, MiniSiteData } from "@/components/MiniSitePreview";
 import { FloatingHearts } from "@/components/FloatingHearts";
+import { SupportSection } from "@/components/sections/SupportSection";
 import { useI18n } from "@/i18n/I18nContext";
-import { Heart, ArrowRight, Sparkles, Palette, Edit3, Eye, Send } from "lucide-react";
+import { Heart, ArrowRight, Sparkles, Palette, Edit3, Eye, Send, Instagram, Facebook, Youtube } from "lucide-react";
 
 const defaultData = (): MiniSiteData => ({
   themeId: "classic-love",
@@ -121,6 +122,8 @@ const Index = () => {
 
       <FaqSection />
 
+      <SupportSection />
+
       {/* Final CTA */}
       <section className="py-24 text-center bg-gradient-to-br from-foreground via-foreground to-primary/70 text-background relative overflow-hidden">
         <FloatingHearts count={10} color="hsl(348 90% 70%)" />
@@ -136,13 +139,44 @@ const Index = () => {
       </section>
 
       {/* Footer */}
-      <footer className="border-t border-border py-10 text-center text-sm text-foreground/55">
-        <div className="flex items-center justify-center gap-2 font-display text-base">
-          <Heart className="h-4 w-4 fill-primary text-primary" />
-          <span>My Love <span className="text-gradient-rose font-bold">Page</span></span>
+      <footer className="border-t border-border py-12 text-center text-sm text-foreground/60">
+        <div className="mx-auto max-w-5xl px-5 sm:px-8">
+          <div className="flex items-center justify-center gap-2 font-display text-base">
+            <Heart className="h-4 w-4 fill-primary text-primary" />
+            <span>My Love <span className="text-gradient-rose font-bold">Page</span></span>
+          </div>
+          <p className="mt-3 text-xs">{t.footer.tag}</p>
+
+          <div className="mt-5 flex items-center justify-center gap-3">
+            {[
+              { Icon: Instagram, href: "https://instagram.com", label: "Instagram" },
+              { Icon: Facebook, href: "https://facebook.com", label: "Facebook" },
+              { Icon: Youtube, href: "https://youtube.com", label: "YouTube" },
+              {
+                Icon: (props: React.SVGProps<SVGSVGElement>) => (
+                  <svg viewBox="0 0 24 24" fill="currentColor" {...props}>
+                    <path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-5.2 1.74 2.89 2.89 0 0 1 2.31-4.64 2.93 2.93 0 0 1 .88.13V9.4a6.84 6.84 0 0 0-1-.05A6.33 6.33 0 0 0 5.8 20.1a6.34 6.34 0 0 0 10.86-4.43V8.93a8.16 8.16 0 0 0 4.77 1.52V7a4.85 4.85 0 0 1-1.84-.31z" />
+                  </svg>
+                ),
+                href: "https://tiktok.com",
+                label: "TikTok",
+              },
+            ].map(({ Icon, href, label }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="h-9 w-9 grid place-items-center rounded-full border border-border bg-card hover:bg-primary hover:text-primary-foreground hover:border-primary transition-colors"
+              >
+                <Icon className="h-4 w-4" />
+              </a>
+            ))}
+          </div>
+
+          <p className="mt-5 text-xs">© {new Date().getFullYear()} · My Love Page · {t.footer.rights}</p>
         </div>
-        <p className="mt-2 text-xs">{t.footer.tag}</p>
-        <p className="mt-1 text-xs">© {new Date().getFullYear()} · {t.footer.rights}</p>
       </footer>
 
       <LoginModal open={loginOpen} onOpenChange={setLoginOpen} />
