@@ -8,8 +8,10 @@ import { LoginModal } from "@/components/LoginModal";
 import { MiniSitePreview, MiniSiteData } from "@/components/MiniSitePreview";
 import { FloatingHearts } from "@/components/FloatingHearts";
 import { SupportSection } from "@/components/sections/SupportSection";
+import { BenefitsSection } from "@/components/sections/BenefitsSection";
+import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { useI18n } from "@/i18n/I18nContext";
-import { Heart, ArrowRight, Sparkles, Palette, Edit3, Eye, Send, Instagram, Facebook, Youtube } from "lucide-react";
+import { Heart, ArrowRight, Sparkles, Palette, Edit3, Eye, Send, Instagram, Facebook, Youtube, Star, Users, ShieldCheck } from "lucide-react";
 
 const defaultData = (): MiniSiteData => ({
   themeId: "classic-love",
@@ -38,6 +40,7 @@ const Index = () => {
     { i: Palette, t: t.how.s1t, d: t.how.s1d },
     { i: Edit3, t: t.how.s2t, d: t.how.s2d },
     { i: Eye, t: t.how.s3t, d: t.how.s3d },
+    { i: Send, t: "Compartilhe e emocione", d: "Mande o link no WhatsApp ou imprima o QR Code para uma surpresa inesquecível." },
   ];
 
   return (
