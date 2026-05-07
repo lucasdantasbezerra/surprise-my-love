@@ -62,7 +62,23 @@ const Index = () => {
               {t.hero.tagline}
             </h1>
             <p className="mt-6 text-lg text-foreground/65 leading-relaxed max-w-xl">{t.hero.sub}</p>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
+
+            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-3 text-sm text-foreground/70">
+              <div className="inline-flex items-center gap-1.5">
+                <div className="flex text-primary">
+                  {Array.from({ length: 5 }).map((_, i) => <Star key={i} className="h-4 w-4 fill-current" />)}
+                </div>
+                <b className="text-foreground">4.9/5</b>
+              </div>
+              <div className="inline-flex items-center gap-1.5">
+                <Users className="h-4 w-4 text-primary" /><b className="text-foreground">+2.000</b> casais
+              </div>
+              <div className="inline-flex items-center gap-1.5">
+                <ShieldCheck className="h-4 w-4 text-primary" /> Garantia de 7 dias
+              </div>
+            </div>
+
+            <div className="mt-7 flex flex-wrap items-center gap-3">
               <button onClick={scrollToCreator} className="group inline-flex items-center gap-2 rounded-full bg-gradient-rose text-primary-foreground px-7 py-4 font-semibold shadow-rose hover:scale-105 transition-transform">
                 {t.hero.cta1} <Heart className="h-4 w-4 fill-current group-hover:scale-125 transition-transform" />
               </button>
@@ -111,6 +127,8 @@ const Index = () => {
 
       <ThemesSection selected={themeId} onSelect={(id) => { setThemeId(id); scrollToCreator(); }} />
 
+      <BenefitsSection />
+
       <CreatorSection
         themeId={themeId}
         setThemeId={setThemeId}
@@ -120,6 +138,8 @@ const Index = () => {
         setPlan={setPlan}
         prices={prices}
       />
+
+      <TestimonialsSection />
 
       <PlansSection prices={prices} onSelect={(p) => { setPlan(p); scrollToCreator(); }} />
 
