@@ -18,11 +18,12 @@ export const Header = ({ onCreate }: Props) => {
   const onLogin = () => navigate(user ? "/account" : "/auth");
 
   const links = [
-    { href: "#themes", label: t.nav.templates },
     { href: "#how", label: t.nav.how },
-    { href: "#features", label: t.nav.gallery },
-    { href: "#testimonials", label: t.nav.testimonials },
+    { href: "#themes", label: t.nav.templates },
+    { href: "#benefits", label: "Benefícios" },
+    { href: "#plans", label: "Planos" },
     { href: "#faq", label: t.nav.faq },
+    { href: "#support", label: "Suporte" },
   ];
 
   return (
