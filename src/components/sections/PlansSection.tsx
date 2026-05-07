@@ -1,5 +1,6 @@
 import { useI18n } from "@/i18n/I18nContext";
 import { Check, X, Sparkles } from "lucide-react";
+import { Reveal } from "@/components/Reveal";
 
 interface Props {
   prices: { basic: string; premium: string };
@@ -21,7 +22,8 @@ export const PlansSection = ({ prices, onSelect }: Props) => {
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* Basic */}
-          <div className="relative rounded-3xl border-2 border-border bg-card p-8 shadow-soft">
+          <Reveal>
+          <div className="relative h-full rounded-3xl border-2 border-border bg-card p-8 shadow-soft hover:border-primary/30 transition-colors">
             <h3 className="font-display text-2xl font-bold">{t.plans.basic}</h3>
             <div className="mt-4 flex items-baseline gap-2">
               <span className="font-display text-5xl font-bold">{prices.basic}</span>
@@ -48,9 +50,11 @@ export const PlansSection = ({ prices, onSelect }: Props) => {
               {t.plans.chooseB}
             </button>
           </div>
+          </Reveal>
 
           {/* Premium */}
-          <div className="relative rounded-3xl bg-gradient-to-br from-foreground via-foreground to-primary/80 text-background p-8 shadow-rose overflow-hidden">
+          <Reveal delay={120}>
+          <div className="relative h-full rounded-3xl bg-gradient-to-br from-foreground via-foreground to-primary/80 text-background p-8 shadow-rose overflow-hidden hover:scale-[1.01] transition-transform">
             <div className="absolute -top-20 -right-20 h-48 w-48 rounded-full bg-primary/40 blur-3xl" />
             <div className="absolute top-5 right-5 inline-flex items-center gap-1 rounded-full bg-primary text-primary-foreground px-3 py-1 text-[10px] font-bold uppercase tracking-widest">
               <Sparkles className="h-3 w-3" /> {t.plans.popular}
@@ -77,6 +81,7 @@ export const PlansSection = ({ prices, onSelect }: Props) => {
               </button>
             </div>
           </div>
+          </Reveal>
         </div>
       </div>
     </section>

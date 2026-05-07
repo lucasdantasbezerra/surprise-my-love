@@ -1,4 +1,5 @@
 import { Infinity, Zap, ShieldCheck, Smartphone, QrCode, Music2, Heart, Globe2 } from "lucide-react";
+import { Reveal } from "@/components/Reveal";
 
 const benefits = [
   { Icon: Zap, title: "Pronto em 3 minutos", desc: "Personalize, pague e receba o link na hora. Sem espera, sem complicação." },
@@ -27,16 +28,15 @@ export const BenefitsSection = () => {
 
         <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5">
           {benefits.map(({ Icon, title, desc }, i) => (
-            <div
-              key={i}
-              className="group rounded-3xl border border-border bg-card p-6 shadow-soft hover:shadow-rose hover:-translate-y-1 transition-all duration-300"
-            >
-              <div className="h-11 w-11 rounded-2xl bg-gradient-rose grid place-items-center text-primary-foreground shadow-rose group-hover:scale-110 transition-transform">
-                <Icon className="h-5 w-5" />
+            <Reveal key={i} delay={(i % 4) * 80}>
+              <div className="group h-full rounded-3xl border border-border bg-card p-6 shadow-soft hover:shadow-rose hover:-translate-y-1 transition-all duration-300">
+                <div className="h-11 w-11 rounded-2xl bg-gradient-rose grid place-items-center text-primary-foreground shadow-rose group-hover:scale-110 transition-transform">
+                  <Icon className="h-5 w-5" />
+                </div>
+                <h3 className="mt-5 font-display text-lg font-bold">{title}</h3>
+                <p className="mt-2 text-sm text-foreground/60 leading-relaxed">{desc}</p>
               </div>
-              <h3 className="mt-5 font-display text-lg font-bold">{title}</h3>
-              <p className="mt-2 text-sm text-foreground/60 leading-relaxed">{desc}</p>
-            </div>
+            </Reveal>
           ))}
         </div>
       </div>

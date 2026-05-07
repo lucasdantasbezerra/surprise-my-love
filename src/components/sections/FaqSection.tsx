@@ -1,5 +1,6 @@
 import { useI18n } from "@/i18n/I18nContext";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { Reveal } from "@/components/Reveal";
 
 export const FaqSection = () => {
   const { t } = useI18n();
@@ -14,12 +15,14 @@ export const FaqSection = () => {
         </div>
         <Accordion type="single" collapsible className="space-y-3">
           {t.faqs.map(([q, a], i) => (
-            <AccordionItem key={i} value={`i-${i}`} className="border-none rounded-2xl bg-card/80 backdrop-blur shadow-soft px-6">
-              <AccordionTrigger className="py-5 text-left font-display text-base sm:text-lg font-semibold hover:no-underline">
-                {q}
-              </AccordionTrigger>
-              <AccordionContent className="pb-5 text-foreground/70 leading-relaxed">{a}</AccordionContent>
-            </AccordionItem>
+            <Reveal key={i} delay={i * 60}>
+              <AccordionItem value={`i-${i}`} className="border-none rounded-2xl bg-card/80 backdrop-blur shadow-soft px-6">
+                <AccordionTrigger className="py-5 text-left font-display text-base sm:text-lg font-semibold hover:no-underline">
+                  {q}
+                </AccordionTrigger>
+                <AccordionContent className="pb-5 text-foreground/70 leading-relaxed">{a}</AccordionContent>
+              </AccordionItem>
+            </Reveal>
           ))}
         </Accordion>
       </div>
