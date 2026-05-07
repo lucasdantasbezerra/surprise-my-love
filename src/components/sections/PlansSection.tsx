@@ -22,7 +22,8 @@ export const PlansSection = ({ prices, onSelect }: Props) => {
 
         <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
           {/* Basic */}
-          <div className="relative rounded-3xl border-2 border-border bg-card p-8 shadow-soft">
+          <Reveal>
+          <div className="relative h-full rounded-3xl border-2 border-border bg-card p-8 shadow-soft hover:border-primary/30 transition-colors">
             <h3 className="font-display text-2xl font-bold">{t.plans.basic}</h3>
             <div className="mt-4 flex items-baseline gap-2">
               <span className="font-display text-5xl font-bold">{prices.basic}</span>
@@ -80,9 +81,9 @@ export const PlansSection = ({ prices, onSelect }: Props) => {
               </button>
             </div>
           </div>
-          </div>
           </Reveal>
         </div>
+      </div>
     </section>
   );
 };
