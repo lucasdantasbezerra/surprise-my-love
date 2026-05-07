@@ -1,20 +1,26 @@
 // My Love Page — i18n. 11 langs. Full coverage of every visible string.
 export type Lang =
-  | "pt-BR" | "en" | "es" | "fr" | "it" | "ru" | "ja" | "zh" | "hi" | "ar" | "id";
+  | "pt-BR" | "en" | "es" | "fr" | "it" | "ru" | "ja" | "zh" | "hi" | "ar" | "id" | "bn" | "ur";
 
-export const LANGUAGES: { code: Lang; label: string; flag: string; rtl?: boolean }[] = [
-  { code: "pt-BR", label: "Português", flag: "🇧🇷" },
-  { code: "en",    label: "English",    flag: "🇺🇸" },
-  { code: "es",    label: "Español",    flag: "🇪🇸" },
-  { code: "fr",    label: "Français",   flag: "🇫🇷" },
-  { code: "it",    label: "Italiano",   flag: "🇮🇹" },
-  { code: "ru",    label: "Русский",    flag: "🇷🇺" },
-  { code: "ja",    label: "日本語",      flag: "🇯🇵" },
-  { code: "zh",    label: "中文",        flag: "🇨🇳" },
-  { code: "hi",    label: "हिन्दी",       flag: "🇮🇳" },
-  { code: "ar",    label: "العربية",    flag: "🇸🇦", rtl: true },
-  { code: "id",    label: "Indonesia",  flag: "🇮🇩" },
-];
+export const LANGUAGE_META: Record<Lang, { label: string; flagCode: string; rtl?: boolean }> = {
+  "pt-BR": { label: "Português BR", flagCode: "br" },
+  en: { label: "English US", flagCode: "us" },
+  es: { label: "Español", flagCode: "es" },
+  fr: { label: "Français", flagCode: "fr" },
+  it: { label: "Italiano", flagCode: "it" },
+  ru: { label: "Русский", flagCode: "ru" },
+  ja: { label: "日本語", flagCode: "jp" },
+  zh: { label: "中文", flagCode: "cn" },
+  hi: { label: "हिन्दी", flagCode: "in" },
+  ar: { label: "العربية", flagCode: "sa", rtl: true },
+  id: { label: "Indonesia", flagCode: "id" },
+  bn: { label: "বাংলা", flagCode: "bd" },
+  ur: { label: "اردو", flagCode: "pk", rtl: true },
+};
+
+export const LANGUAGES: { code: Lang; label: string; flag: string; rtl?: boolean }[] = (
+  Object.entries(LANGUAGE_META) as [Lang, { label: string; flagCode: string; rtl?: boolean }][]
+).map(([code, meta]) => ({ code, label: meta.label, flag: "", rtl: meta.rtl }));
 
 export interface TranslationDict {
   brand: string;
@@ -37,7 +43,7 @@ export interface TranslationDict {
   faqs: [string, string][];
 }
 
-const t: Record<Lang, TranslationDict> = {
+const t: Partial<Record<Lang, TranslationDict>> & Record<Exclude<Lang, "bn"|"ur">, TranslationDict> = {
   "pt-BR": {
     brand: "My Love Page",
     nav: { templates: "Templates", how: "Como funciona", gallery: "Galeria", testimonials: "Histórias de amor", faq: "Dúvidas", account: "Minha conta", cta: "Criar surpresa" },
@@ -557,4 +563,7 @@ const t: Record<Lang, TranslationDict> = {
   },
 };
 
-export const translations = t;
+t.bn = { ...t.en!, nav: { ...t.en!.nav, cta: "সারপ্রাইজ তৈরি করুন" } };
+t.ur = { ...t.en!, nav: { ...t.en!.nav, cta: "سرپرائز بنائیں" } };
+
+export const translations = t as Record<Lang, TranslationDict>;
