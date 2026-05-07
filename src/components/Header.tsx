@@ -50,8 +50,9 @@ export const Header = ({ onCreate }: Props) => {
           </button>
           <button
             onClick={onCreate}
-            className="inline-flex items-center gap-1.5 rounded-full bg-primary text-primary-foreground px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold shadow-rose hover:scale-105 transition-transform"
+            className="relative inline-flex items-center gap-1.5 rounded-full bg-gradient-rose text-primary-foreground px-4 sm:px-5 py-2 text-xs sm:text-sm font-semibold shadow-rose hover:scale-105 transition-transform ring-2 ring-primary/30 ring-offset-2 ring-offset-background"
           >
+            <Heart className="h-3.5 w-3.5 fill-current" />
             <span>{t.nav.cta}</span>
             <ArrowRight className="h-3.5 w-3.5" />
           </button>
