@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Moon, BookOpen, Music, Sparkles, Leaf, Heart, Star, Camera } from "lucide-react";
+import { Moon, BookOpen, Music, Sparkles, Leaf, Heart, Star, Camera, Film, Play, MessageCircle, Clock } from "lucide-react";
 
 interface Props {
   startDate: string;
@@ -8,10 +8,6 @@ interface Props {
   isDark: boolean;
 }
 
-/**
- * Creative per-theme counter. Each theme expresses time differently
- * (full moons, chapters, %, heartbeats, photos…), with a small detail row.
- */
 export const CreativeCounter = ({ startDate, themeId, accentHex, isDark }: Props) => {
   const [now, setNow] = useState(() => new Date());
   useEffect(() => {
@@ -27,7 +23,6 @@ export const CreativeCounter = ({ startDate, themeId, accentHex, isDark }: Props
   const totalHours = Math.floor(diffMs / (1000 * 60 * 60));
   const totalMin = Math.floor(diffMs / (1000 * 60));
 
-  // Calendar values
   let years = 0, months = 0, days = 0;
   if (valid) {
     years = now.getFullYear() - start.getFullYear();
@@ -41,14 +36,14 @@ export const CreativeCounter = ({ startDate, themeId, accentHex, isDark }: Props
   const muted = isDark ? "text-white/55" : "text-black/50";
   const subtle = isDark ? "text-white/70" : "text-black/65";
 
-  // Per-theme presentation
-  const fullMoons = Math.floor(totalDays / 29.53);
-  const chapters = Math.max(1, Math.floor(totalDays / 30));
-  const heartbeats = Math.floor(totalSec * 1.2); // ~72 bpm
+  const heartbeats = Math.floor(totalSec * 1.2);
   const songs = Math.floor(totalDays / 3);
   const photosTaken = Math.floor(totalDays * 1.7);
-  const sunsets = totalDays;
-  const seasons = Math.floor(totalDays / 91);
+  const fullMoons = Math.floor(totalDays / 29.53);
+  const episodes = Math.max(1, Math.floor(totalDays / 7));
+  const seasons = Math.max(1, Math.floor(totalDays / 91));
+  const messages = Math.floor(totalDays * 47);
+  const views = Math.floor(totalDays * 1234);
 
   const Big = ({ value, label, icon: Icon }: { value: string | number; label: string; icon?: any }) => (
     <div className="text-center">
@@ -69,7 +64,6 @@ export const CreativeCounter = ({ startDate, themeId, accentHex, isDark }: Props
     </div>
   );
 
-  // Default time row (used by most themes)
   const defaultRow = (
     <div className="grid grid-cols-3 sm:grid-cols-6 gap-3 sm:gap-4">
       <Small value={years} label="anos" />
@@ -82,22 +76,34 @@ export const CreativeCounter = ({ startDate, themeId, accentHex, isDark }: Props
   );
 
   switch (themeId) {
-    case "estrelas-sonhadoras":
+    case "stream-love":
       return (
         <div className="space-y-6">
-          <Big value={fullMoons} label="luas cheias juntos" icon={Moon} />
+          <Big value={`T${seasons} • E${episodes}`} label="da nossa série" icon={Film} />
           <div className="grid grid-cols-3 gap-3">
-            <Small value={totalDays.toLocaleString()} label="noites estreladas" />
-            <Small value={Math.floor(totalDays / 7).toLocaleString()} label="constelações" />
-            <Small value={`${(totalDays / 365).toFixed(1)}`} label="órbitas" />
+            <Small value={seasons} label="temporadas" />
+            <Small value={episodes} label="episódios" />
+            <Small value={`${(totalHours).toLocaleString()}h`} label="assistidas" />
           </div>
           {defaultRow}
         </div>
       );
-    case "edicao-especial":
+    case "music-love":
       return (
         <div className="space-y-6">
-          <Big value={`Cap. ${chapters}`} label="da nossa história" icon={BookOpen} />
+          <Big value={songs.toLocaleString()} label="músicas tocadas por nós" icon={Music} />
+          <div className="grid grid-cols-3 gap-3">
+            <Small value={totalMin.toLocaleString()} label="min ouvidos" />
+            <Small value={heartbeats.toLocaleString()} label="batidas" />
+            <Small value={`${(totalDays / 365).toFixed(1)}`} label="álbuns de vida" />
+          </div>
+          {defaultRow}
+        </div>
+      );
+    case "timeline":
+      return (
+        <div className="space-y-6">
+          <Big value={`Cap. ${Math.max(1, Math.floor(totalDays / 30))}`} label="da nossa história" icon={BookOpen} />
           <div className="grid grid-cols-3 gap-3">
             <Small value={Math.floor(totalDays / 7)} label="capítulos" />
             <Small value={totalDays} label="páginas" />
@@ -106,19 +112,31 @@ export const CreativeCounter = ({ startDate, themeId, accentHex, isDark }: Props
           {defaultRow}
         </div>
       );
-    case "neon-poetico":
+    case "tube":
       return (
         <div className="space-y-6">
-          <Big value={heartbeats.toLocaleString()} label="batidas por você" icon={Heart} />
+          <Big value={views.toLocaleString()} label="visualizações do coração" icon={Play} />
           <div className="grid grid-cols-3 gap-3">
-            <Small value={songs.toLocaleString()} label="músicas" />
-            <Small value={totalMin.toLocaleString()} label="minutos" />
-            <Small value={totalSec.toLocaleString()} label="segundos" />
+            <Small value={Math.floor(views * 0.8).toLocaleString()} label="curtidas" />
+            <Small value={totalDays.toLocaleString()} label="dias no ar" />
+            <Small value={`${(totalHours).toLocaleString()}h`} label="reprisadas" />
           </div>
           {defaultRow}
         </div>
       );
-    case "polaroid-vintage":
+    case "chat":
+      return (
+        <div className="space-y-6">
+          <Big value={messages.toLocaleString()} label="mensagens trocadas" icon={MessageCircle} />
+          <div className="grid grid-cols-3 gap-3">
+            <Small value={Math.floor(messages / 3).toLocaleString()} label="“te amo”" />
+            <Small value={totalDays.toLocaleString()} label="dias online" />
+            <Small value={Math.floor(messages * 0.02).toLocaleString()} label="emojis ❤️" />
+          </div>
+          {defaultRow}
+        </div>
+      );
+    case "polaroid":
       return (
         <div className="space-y-6">
           <Big value={photosTaken.toLocaleString()} label="memórias guardadas" icon={Camera} />
@@ -130,43 +148,19 @@ export const CreativeCounter = ({ startDate, themeId, accentHex, isDark }: Props
           {defaultRow}
         </div>
       );
-    case "aurora-pastel":
-      return (
-        <div className="space-y-6">
-          <Big value={sunsets.toLocaleString()} label="amanheceres com você" icon={Sparkles} />
-          <div className="grid grid-cols-3 gap-3">
-            <Small value={seasons} label="estações" />
-            <Small value={Math.floor(totalDays / 7)} label="semanas" />
-            <Small value={years} label="primaveras" />
-          </div>
-          {defaultRow}
-        </div>
-      );
-    case "jardim-secreto":
-      return (
-        <div className="space-y-6">
-          <Big value={Math.floor(totalDays * 2.4).toLocaleString()} label="folhas no nosso jardim" icon={Leaf} />
-          <div className="grid grid-cols-3 gap-3">
-            <Small value={seasons} label="estações" />
-            <Small value={Math.floor(totalDays / 30)} label="floradas" />
-            <Small value={years} label="ciclos" />
-          </div>
-          {defaultRow}
-        </div>
-      );
-    case "meia-noite":
+    case "midnight":
       return (
         <div className="space-y-6">
           <Big value={totalDays.toLocaleString()} label="noites te escolhendo" icon={Star} />
           <div className="grid grid-cols-3 gap-3">
-            <Small value={fullMoons} label="luas" />
+            <Small value={fullMoons} label="luas cheias" />
             <Small value={Math.floor(totalHours).toLocaleString()} label="horas" />
-            <Small value={Math.floor(totalSec).toLocaleString()} label="segundos" />
+            <Small value={heartbeats.toLocaleString()} label="batidas" />
           </div>
           {defaultRow}
         </div>
       );
-    case "carta-eterna":
+    case "minimal":
     default:
       return (
         <div className="space-y-6">
