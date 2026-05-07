@@ -161,3 +161,30 @@
 .animate-fadeInUp { animation: fadeInUp 0.8s var(--transition-smooth) both; }
 .marquee-track { width: max-content; animation: marquee 50s linear infinite; }
 .marquee-track:hover { animation-play-state: paused; }
+
+/* Reveal on scroll */
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.9s var(--transition-smooth), transform 0.9s var(--transition-smooth); }
+.reveal.is-visible { opacity: 1; transform: translateY(0); }
+
+/* Premium button shimmer */
+.btn-shimmer { position: relative; overflow: hidden; isolation: isolate; }
+.btn-shimmer::after {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(110deg, transparent 30%, hsl(0 0% 100% / 0.35) 50%, transparent 70%);
+  transform: translateX(-120%); transition: transform 0.9s var(--transition-smooth);
+  pointer-events: none;
+}
+.btn-shimmer:hover::after { transform: translateX(120%); }
+
+/* Soft glow ring for premium CTAs */
+.glow-rose { box-shadow: 0 0 0 1px hsl(348 78% 56% / 0.25), 0 20px 60px -20px hsl(348 78% 56% / 0.55); }
+
+/* Scroll offset so header doesn't hide anchored sections */
+section[id] { scroll-margin-top: 88px; }
+
+/* Reduce motion */
+@media (prefers-reduced-motion: reduce) {
+  .heartbeat, .floating-heart, .marquee-track, .animate-marquee, .animate-fadeInUp { animation: none !important; }
+  .reveal { transition: none; opacity: 1; transform: none; }
+}
+
