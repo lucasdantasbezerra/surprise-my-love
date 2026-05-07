@@ -14,7 +14,7 @@ import { useI18n } from "@/i18n/I18nContext";
 import { Heart, ArrowRight, Sparkles, Palette, Edit3, Eye, Send, Instagram, Facebook, Youtube, Star, Users, ShieldCheck } from "lucide-react";
 
 const defaultData = (): MiniSiteData => ({
-  themeId: "classic-love",
+  themeId: "minimal",
   title: "Maria & João",
   honoree: "Maria",
   startDate: new Date(Date.now() - 1000 * 60 * 60 * 24 * 365 * 2.4).toISOString(),
@@ -29,7 +29,7 @@ const defaultData = (): MiniSiteData => ({
 const Index = () => {
   const { t, prices } = useI18n();
   const [data, setData] = useState<MiniSiteData>(defaultData);
-  const [themeId, setThemeId] = useState("classic-love");
+  const [themeId, setThemeId] = useState("minimal");
   const [plan, setPlan] = useState<"basic" | "premium">("premium");
   const [loginOpen, setLoginOpen] = useState(false);
 
