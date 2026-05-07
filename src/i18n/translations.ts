@@ -563,4 +563,7 @@ const t: Partial<Record<Lang, TranslationDict>> & Record<Exclude<Lang, "bn"|"ur"
   },
 };
 
-export const translations = t;
+t.bn = { ...t.en!, nav: { ...t.en!.nav, cta: "সারপ্রাইজ তৈরি করুন" } };
+t.ur = { ...t.en!, nav: { ...t.en!.nav, cta: "سرپرائز بنائیں" } };
+
+export const translations = t as Record<Lang, TranslationDict>;
