@@ -26,7 +26,10 @@ export const SupportSection = () => {
     }
     setLoading(true);
     const { error } = await supabase.from("support_messages").insert({
-      ...parsed.data,
+      name: parsed.data.name,
+      email: parsed.data.email,
+      subject: parsed.data.subject ?? null,
+      message: parsed.data.message,
       user_id: user?.id ?? null,
     });
     setLoading(false);
