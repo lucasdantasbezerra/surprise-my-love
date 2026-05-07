@@ -102,7 +102,7 @@ const LovePageView = () => {
           ))}
         </div>
       )}
-      {theme.id === "estrelas-sonhadoras" && (
+      {theme.id === "midnight" && (
         <div className="fixed inset-0 pointer-events-none z-0">
           {Array.from({ length: 80 }).map((_, i) => (
             <span key={i} className="absolute rounded-full bg-white animate-pulse"

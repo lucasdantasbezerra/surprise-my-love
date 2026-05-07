@@ -35,7 +35,7 @@ export const ThemesSection = ({ selected, onSelect }: Props) => {
                 }`}
               >
                 <div className={`relative aspect-[4/5] rounded-3xl overflow-hidden ${theme.bg} ${theme.text} ${theme.font}`}>
-                  {theme.id === "dreamy-stars" && (
+                  {theme.id === "midnight" && (
                     <div className="absolute inset-0">
                       {Array.from({ length: 20 }).map((_, i) => (
                         <span key={i} className="absolute rounded-full bg-white" style={{

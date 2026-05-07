@@ -45,7 +45,7 @@ export const MiniSitePreview = ({ data, compact = false }: { data: MiniSiteData;
           ))}
         </div>
       )}
-      {theme.id === "dreamy-stars" && (
+      {theme.id === "midnight" && (
         <div className="absolute inset-0 pointer-events-none">
           {Array.from({ length: 30 }).map((_, i) => (
             <span
