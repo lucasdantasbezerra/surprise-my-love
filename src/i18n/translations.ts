@@ -43,7 +43,7 @@ export interface TranslationDict {
   faqs: [string, string][];
 }
 
-const t: Record<Lang, TranslationDict> = {
+const t: Partial<Record<Lang, TranslationDict>> & Record<Exclude<Lang, "bn"|"ur">, TranslationDict> = {
   "pt-BR": {
     brand: "My Love Page",
     nav: { templates: "Templates", how: "Como funciona", gallery: "Galeria", testimonials: "Histórias de amor", faq: "Dúvidas", account: "Minha conta", cta: "Criar surpresa" },
