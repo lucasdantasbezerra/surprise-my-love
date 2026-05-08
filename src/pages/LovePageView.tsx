@@ -286,7 +286,7 @@ const LovePageView = () => {
       {row.main_message && (
         <section className="relative z-10 px-5 sm:px-8 py-24 sm:py-32">
           <div className="max-w-3xl mx-auto">
-            <ChapterMark n="III" title="Carta para você" theme={theme} muted={muted} hairline={hairlineSoft} />
+            <ChapterMark n="III" title={ui.view.chapter3} chapterLabel={ui.view.chapters} theme={theme} muted={muted} hairline={hairlineSoft} />
             <div className={`mt-12 relative rounded-3xl border ${hairline} ${surface} p-8 sm:p-14`}>
               <span
                 className="absolute -top-6 left-8 font-display text-8xl leading-none select-none"
@@ -311,7 +311,7 @@ const LovePageView = () => {
       {isPremium && url && (
         <section className="relative z-10 px-5 sm:px-8 py-24 sm:py-32">
           <div className="max-w-3xl mx-auto">
-            <ChapterMark n="IV" title="Nossa trilha" theme={theme} muted={muted} hairline={hairlineSoft} />
+            <ChapterMark n="IV" title={ui.view.chapter4} chapterLabel={ui.view.chapters} theme={theme} muted={muted} hairline={hairlineSoft} />
             <div className="mt-12">
               {yt ? (
                 <div className="rounded-2xl overflow-hidden aspect-video shadow-soft">
@@ -344,9 +344,9 @@ const LovePageView = () => {
           <span>{issueLabel}</span>
           <span className="flex items-center gap-2">
             <Heart className={`h-3 w-3 ${theme.accent}`} style={{ fill: theme.accentHex }} />
-            feito com amor em <a href="/" className="underline-offset-4 hover:underline normal-case">My Love Page</a>
+            {ui.view.madeWithLove} <a href="/" className="underline-offset-4 hover:underline normal-case">My Love Page</a>
           </span>
-          <span>fim</span>
+          <span>{ui.view.end}</span>
         </div>
       </footer>
 
@@ -378,13 +378,13 @@ const LovePageView = () => {
 
 // Editorial chapter mark
 const ChapterMark = ({
-  n, title, theme, muted, hairline,
-}: { n: string; title: string; theme: ReturnType<typeof getTheme>; muted: string; hairline: string }) => (
+  n, title, chapterLabel, theme, muted, hairline,
+}: { n: string; title: string; chapterLabel: string; theme: ReturnType<typeof getTheme>; muted: string; hairline: string }) => (
   <div className={`flex items-end justify-between gap-6 border-b ${hairline} pb-5`}>
     <div className="flex items-baseline gap-5">
       <span className={`font-display text-5xl sm:text-6xl ${theme.accent}`} style={{ color: theme.accentHex }}>{n}</span>
       <div>
-        <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>Capítulo</div>
+        <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>{chapterLabel}</div>
         <h2 className="font-display text-2xl sm:text-3xl tracking-tight">{title}</h2>
       </div>
     </div>
