@@ -42,8 +42,8 @@ const LovePageView = () => {
   }, [slug, getBySlug, getImages]);
 
   useEffect(() => {
-    if (row) document.title = `${row.title || "Nossa história"} • My Love Page`;
-  }, [row]);
+    if (row) document.title = `${row.title || ui.view.ourStory} • My Love Page`;
+  }, [row, ui]);
 
   if (loading) {
     return <div className="min-h-screen grid place-items-center bg-background"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
@@ -54,8 +54,8 @@ const LovePageView = () => {
       <div className="min-h-screen grid place-items-center bg-gradient-romance text-center px-6">
         <div>
           <Heart className="h-10 w-10 mx-auto fill-primary text-primary heartbeat" />
-          <h1 className="mt-4 font-display text-3xl font-bold">Página não encontrada</h1>
-          <p className="mt-2 text-foreground/60">Esta página pode ter expirado ou não existe mais.</p>
+          <h1 className="mt-4 font-display text-3xl font-bold">{ui.view.notFoundTitle}</h1>
+          <p className="mt-2 text-foreground/60">{ui.view.notFoundSub}</p>
         </div>
       </div>
     );
@@ -79,22 +79,20 @@ const LovePageView = () => {
   const share = async () => {
     const shareUrl = window.location.href;
     if (navigator.share) {
-      try { await navigator.share({ title: row.title || "Nossa história", url: shareUrl }); return; } catch {}
+      try { await navigator.share({ title: row.title || ui.view.ourStory, url: shareUrl }); return; } catch {}
     }
     await navigator.clipboard.writeText(shareUrl);
-    toast.success("Link copiado!");
+    toast.success(ui.view.linkCopied);
   };
 
-  // Issue/Date label for editorial feel
   const startD = new Date(startDate);
-  const issueLabel = `VOL. ${startD.getFullYear()} · Nº ${String(startD.getMonth() + 1).padStart(2, "0")}`;
+  const issueLabel = `${ui.view.issuePrefix} ${startD.getFullYear()} · ${ui.view.issueNo} ${String(startD.getMonth() + 1).padStart(2, "0")}`;
 
-  // Capítulos (chapters) for the narrative scroll
   const chapters: { n: string; title: string; show: boolean }[] = [
-    { n: "I", title: "O começo", show: true },
-    { n: "II", title: "Nossos momentos", show: photos.length > 0 },
-    { n: "III", title: "Carta para você", show: !!row.main_message },
-    { n: "IV", title: "Nossa trilha", show: isPremium && !!url },
+    { n: "I", title: ui.view.chapter1, show: true },
+    { n: "II", title: ui.view.chapter2, show: photos.length > 0 },
+    { n: "III", title: ui.view.chapter3, show: !!row.main_message },
+    { n: "IV", title: ui.view.chapter4, show: isPremium && !!url },
   ].filter((c) => c.show);
 
   return (
