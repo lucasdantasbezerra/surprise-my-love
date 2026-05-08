@@ -17,7 +17,7 @@ interface MiniSiteData {
 }
 
 export const MiniSitePreview = ({ data, compact = false }: { data: MiniSiteData; compact?: boolean }) => {
-  const { t } = useI18n();
+  const { t, ui } = useI18n();
   const theme = getTheme(data.themeId);
   const isDark = theme.vibe === "dark";
   const muted = isDark ? "text-white/55" : "text-black/50";
@@ -150,7 +150,7 @@ export const MiniSitePreview = ({ data, compact = false }: { data: MiniSiteData;
                 <Music className="h-4 w-4 text-white" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className={`text-xs uppercase tracking-widest ${muted}`}>♪ Nossa música</div>
+                <div className={`text-xs uppercase tracking-widest ${muted}`}>{ui.miniSite.ourSong}</div>
                 <div className={`text-sm font-medium truncate ${theme.text}`}>{data.music}</div>
               </div>
             </div>

@@ -13,21 +13,20 @@ import { TestimonialsSection } from "@/components/sections/TestimonialsSection";
 import { useI18n } from "@/i18n/I18nContext";
 import { Heart, ArrowRight, Sparkles, Palette, Edit3, Eye, Send, Instagram, Facebook, Youtube, Star, Users, ShieldCheck, Gift, Music2 } from "lucide-react";
 
-const defaultData = (): MiniSiteData => ({
-  themeId: "minimal",
-  title: "Maria & João",
-  honoree: "Maria",
-  startDate: new Date(Date.now() - 1000 * 60 * 60 * 24 * 365 * 2.4).toISOString(),
-  message: "Cada segundo ao seu lado é uma página da minha história favorita.",
-  finalMessage: "Para sempre, eu",
-  photos: [],
-  music: "Perfect — Ed Sheeran",
-  hasMusic: true,
-  hasAnimations: true,
-});
-
 const Index = () => {
-  const { t, prices } = useI18n();
+  const { t, ui, prices } = useI18n();
+  const defaultData = (): MiniSiteData => ({
+    themeId: "minimal",
+    title: ui.defaults.title,
+    honoree: ui.defaults.honoree,
+    startDate: new Date(Date.now() - 1000 * 60 * 60 * 24 * 365 * 2.4).toISOString(),
+    message: ui.defaults.message,
+    finalMessage: ui.defaults.finalMessage,
+    photos: [],
+    music: ui.defaults.music,
+    hasMusic: true,
+    hasAnimations: true,
+  });
   const [data, setData] = useState<MiniSiteData>(defaultData);
   const [themeId, setThemeId] = useState("minimal");
   const [plan, setPlan] = useState<"basic" | "premium">("premium");
@@ -40,7 +39,7 @@ const Index = () => {
     { i: Palette, t: t.how.s1t, d: t.how.s1d },
     { i: Edit3, t: t.how.s2t, d: t.how.s2d },
     { i: Eye, t: t.how.s3t, d: t.how.s3d },
-    { i: Send, t: "Compartilhe e emocione", d: "Mande o link no WhatsApp ou imprima o QR Code para uma surpresa inesquecível." },
+    { i: Send, t: ui.steps.shareTitle, d: ui.steps.shareDesc },
   ];
 
   return (
@@ -71,10 +70,10 @@ const Index = () => {
                 <b className="text-foreground">4.9/5</b>
               </div>
               <div className="inline-flex items-center gap-1.5">
-                <Users className="h-4 w-4 text-primary" /><b className="text-foreground">+2.000</b> casais
+                <Users className="h-4 w-4 text-primary" /> <b className="text-foreground">{ui.hero.couplesCount}</b>
               </div>
               <div className="inline-flex items-center gap-1.5">
-                <ShieldCheck className="h-4 w-4 text-primary" /> Garantia de 7 dias
+                <ShieldCheck className="h-4 w-4 text-primary" /> {ui.hero.guarantee}
               </div>
             </div>
 
@@ -104,7 +103,7 @@ const Index = () => {
             <div className="hero-side-phone hero-side-phone-left">
               <div className="hero-phone-notch" />
               <div className="hero-side-phone-screen hero-side-phone-screen-dark">
-                <div className="inline-flex rounded-full bg-emerald-400/20 px-2 py-1 text-[10px] font-medium text-emerald-300">WhatsApp</div>
+                <div className="inline-flex rounded-full bg-emerald-400/20 px-2 py-1 text-[10px] font-medium text-emerald-300">{ui.hero.sideWhatsapp}</div>
                 <div className="pt-8 text-xl font-semibold leading-tight text-white/90">
                   {t.hero.title1} <span className="text-emerald-400 italic">{t.hero.titleEm}</span>
                 </div>
@@ -118,13 +117,13 @@ const Index = () => {
               <div className="hero-phone-notch" />
               <div className="hero-side-phone-screen hero-side-phone-screen-rose">
                 <div className="inline-flex items-center gap-2 text-xs font-medium text-white/85">
-                  <Music2 className="h-3.5 w-3.5" /> Nossa música
+                  <Music2 className="h-3.5 w-3.5" /> {ui.hero.sideOurSong}
                 </div>
                 <div className="pt-7 text-xl font-semibold leading-tight text-white">
-                  Perfect — Ed Sheeran
+                  {ui.hero.sideSongTitle}
                 </div>
                 <div className="mt-3 text-xs leading-relaxed text-white/80">
-                  Mensagem, fotos e música tocando dentro do minisite.
+                  {ui.hero.sideSongSubtitle}
                 </div>
               </div>
             </div>

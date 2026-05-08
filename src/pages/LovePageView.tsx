@@ -5,8 +5,10 @@ import { useLovePages, LovePageRow, resolveImageUrl } from "@/hooks/useLovePages
 import { getTheme } from "@/data/themes";
 import { CreativeCounter } from "@/components/CreativeCounter";
 import { toast } from "sonner";
+import { useI18n } from "@/i18n/I18nContext";
 
 const LovePageView = () => {
+  const { ui } = useI18n();
   const { slug = "" } = useParams();
   const { getBySlug, getImages } = useLovePages();
   const [row, setRow] = useState<LovePageRow | null>(null);
@@ -40,8 +42,8 @@ const LovePageView = () => {
   }, [slug, getBySlug, getImages]);
 
   useEffect(() => {
-    if (row) document.title = `${row.title || "Nossa história"} • My Love Page`;
-  }, [row]);
+    if (row) document.title = `${row.title || ui.view.ourStory} • My Love Page`;
+  }, [row, ui]);
 
   if (loading) {
     return <div className="min-h-screen grid place-items-center bg-background"><Loader2 className="h-6 w-6 animate-spin text-primary" /></div>;
@@ -52,8 +54,8 @@ const LovePageView = () => {
       <div className="min-h-screen grid place-items-center bg-gradient-romance text-center px-6">
         <div>
           <Heart className="h-10 w-10 mx-auto fill-primary text-primary heartbeat" />
-          <h1 className="mt-4 font-display text-3xl font-bold">Página não encontrada</h1>
-          <p className="mt-2 text-foreground/60">Esta página pode ter expirado ou não existe mais.</p>
+          <h1 className="mt-4 font-display text-3xl font-bold">{ui.view.notFoundTitle}</h1>
+          <p className="mt-2 text-foreground/60">{ui.view.notFoundSub}</p>
         </div>
       </div>
     );
@@ -77,22 +79,20 @@ const LovePageView = () => {
   const share = async () => {
     const shareUrl = window.location.href;
     if (navigator.share) {
-      try { await navigator.share({ title: row.title || "Nossa história", url: shareUrl }); return; } catch {}
+      try { await navigator.share({ title: row.title || ui.view.ourStory, url: shareUrl }); return; } catch {}
     }
     await navigator.clipboard.writeText(shareUrl);
-    toast.success("Link copiado!");
+    toast.success(ui.view.linkCopied);
   };
 
-  // Issue/Date label for editorial feel
   const startD = new Date(startDate);
-  const issueLabel = `VOL. ${startD.getFullYear()} · Nº ${String(startD.getMonth() + 1).padStart(2, "0")}`;
+  const issueLabel = `${ui.view.issuePrefix} ${startD.getFullYear()} · ${ui.view.issueNo} ${String(startD.getMonth() + 1).padStart(2, "0")}`;
 
-  // Capítulos (chapters) for the narrative scroll
   const chapters: { n: string; title: string; show: boolean }[] = [
-    { n: "I", title: "O começo", show: true },
-    { n: "II", title: "Nossos momentos", show: photos.length > 0 },
-    { n: "III", title: "Carta para você", show: !!row.main_message },
-    { n: "IV", title: "Nossa trilha", show: isPremium && !!url },
+    { n: "I", title: ui.view.chapter1, show: true },
+    { n: "II", title: ui.view.chapter2, show: photos.length > 0 },
+    { n: "III", title: ui.view.chapter3, show: !!row.main_message },
+    { n: "IV", title: ui.view.chapter4, show: isPremium && !!url },
   ].filter((c) => c.show);
 
   return (
@@ -141,12 +141,12 @@ const LovePageView = () => {
             <Heart className={`h-3.5 w-3.5 ${theme.accent} shrink-0`} style={{ fill: theme.accentHex }} />
             <span className={`${muted} truncate`}>{issueLabel}</span>
           </div>
-          <div className={`hidden md:block ${muted} truncate`}>{row.title || "Nossa história"}</div>
+          <div className={`hidden md:block ${muted} truncate`}>{row.title || ui.view.ourStory}</div>
           <button
             onClick={share}
             className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 border ${hairline} hover:opacity-80 transition`}
           >
-            <Share2 className="h-3 w-3" /> <span className="hidden sm:inline">Compartilhar</span>
+            <Share2 className="h-3 w-3" /> <span className="hidden sm:inline">{ui.view.share}</span>
           </button>
         </div>
       </header>
@@ -157,12 +157,12 @@ const LovePageView = () => {
           {/* Left rail — meta */}
           <div className="lg:col-span-3 order-2 lg:order-1 space-y-8">
             <div>
-              <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>Edição</div>
+              <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>{ui.view.edition}</div>
               <div className="mt-1 font-display text-3xl">{startD.getFullYear()}</div>
             </div>
             <div className={`h-px w-16 ${isDark ? "bg-white/30" : "bg-black/25"}`} />
             <div>
-              <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>Capítulos</div>
+              <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>{ui.view.chapters}</div>
               <ol className="mt-3 space-y-2">
                 {chapters.map((c) => (
                   <li key={c.n} className="flex items-baseline gap-3 text-sm">
@@ -178,12 +178,12 @@ const LovePageView = () => {
           <div className="lg:col-span-6 order-1 lg:order-2 text-center">
             <div className={`inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.5em] ${muted}`}>
               <span className={`h-px w-8 ${isDark ? "bg-white/40" : "bg-black/30"}`} />
-              Uma história de amor
+              {ui.view.aLoveStory}
               <span className={`h-px w-8 ${isDark ? "bg-white/40" : "bg-black/30"}`} />
             </div>
 
             <h1 className="mt-8 font-display font-bold text-6xl sm:text-8xl md:text-[9rem] leading-[0.85] tracking-tight">
-              {(row.title || "Eu & Você").split(/\s*&\s*|\s+e\s+/i).map((part, i, arr) => (
+              {(row.title || ui.view.youAndMe).split(/\s*&\s*|\s+e\s+|\s+and\s+|\s+y\s+|\s+et\s+|\s+e\s+/i).map((part, i, arr) => (
                 <span key={i} className="block">
                   {i === 1 && <span className={`italic font-normal ${theme.accent}`}>&nbsp;&&nbsp;</span>}
                   <span className={i === 1 ? "italic" : ""}>{part}</span>
@@ -193,7 +193,7 @@ const LovePageView = () => {
 
             {row.recipient_name && (
               <p className={`mt-10 text-base sm:text-lg ${subtle}`}>
-                <span className={`text-[10px] uppercase tracking-[0.4em] ${muted} block mb-2`}>dedicado a</span>
+                <span className={`text-[10px] uppercase tracking-[0.4em] ${muted} block mb-2`}>{ui.view.dedicatedTo}</span>
                 <span className={`font-display text-2xl sm:text-3xl ${theme.accent}`}>♡ {row.recipient_name}</span>
               </p>
             )}
@@ -205,7 +205,7 @@ const LovePageView = () => {
               <div className="relative">
                 <div className={`absolute -inset-2 rounded-2xl ${surface}`} />
                 <img src={photos[0]} alt="" className="relative aspect-[3/4] w-full object-cover rounded-xl" />
-                <div className={`mt-3 text-[10px] uppercase tracking-[0.3em] ${muted}`}>fig. 01 — capa</div>
+                <div className={`mt-3 text-[10px] uppercase tracking-[0.3em] ${muted}`}>{ui.view.figCover}</div>
               </div>
             ) : (
               <div className={`aspect-[3/4] w-full rounded-xl border ${hairline} grid place-items-center`}>
@@ -222,7 +222,7 @@ const LovePageView = () => {
         <div className={`max-w-7xl w-full mx-auto mt-10 flex items-end justify-between gap-6 border-t ${hairlineSoft} pt-5`}>
           <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>{issueLabel}</div>
           <div className={`flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] ${muted}`}>
-            <span>continuar</span>
+            <span>{ui.view.continueLabel}</span>
             <ArrowDown className="h-3 w-3 animate-bounce" />
           </div>
           <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>My Love Page</div>
@@ -232,7 +232,7 @@ const LovePageView = () => {
       {/* CHAPTER I — Counter */}
       <section className="relative z-10 px-5 sm:px-8 py-24 sm:py-32">
         <div className="max-w-5xl mx-auto">
-          <ChapterMark n="I" title="O começo" theme={theme} muted={muted} hairline={hairlineSoft} />
+          <ChapterMark n="I" title={ui.view.chapter1} chapterLabel={ui.view.chapters} theme={theme} muted={muted} hairline={hairlineSoft} />
           <div className="mt-12">
             <CreativeCounter startDate={startDate} themeId={theme.id} accentHex={theme.accentHex} isDark={isDark} />
           </div>
@@ -243,7 +243,7 @@ const LovePageView = () => {
       {photos.length > 0 && (
         <section className="relative z-10 px-5 sm:px-8 py-24 sm:py-32">
           <div className="max-w-7xl mx-auto">
-            <ChapterMark n="II" title="Nossos momentos" theme={theme} muted={muted} hairline={hairlineSoft} />
+            <ChapterMark n="II" title={ui.view.chapter2} chapterLabel={ui.view.chapters} theme={theme} muted={muted} hairline={hairlineSoft} />
             <div className="mt-12 grid grid-cols-12 auto-rows-[110px] sm:auto-rows-[140px] md:auto-rows-[170px] gap-3 sm:gap-4">
               {photos.map((src, i) => {
                 // Editorial mosaic pattern
@@ -286,7 +286,7 @@ const LovePageView = () => {
       {row.main_message && (
         <section className="relative z-10 px-5 sm:px-8 py-24 sm:py-32">
           <div className="max-w-3xl mx-auto">
-            <ChapterMark n="III" title="Carta para você" theme={theme} muted={muted} hairline={hairlineSoft} />
+            <ChapterMark n="III" title={ui.view.chapter3} chapterLabel={ui.view.chapters} theme={theme} muted={muted} hairline={hairlineSoft} />
             <div className={`mt-12 relative rounded-3xl border ${hairline} ${surface} p-8 sm:p-14`}>
               <span
                 className="absolute -top-6 left-8 font-display text-8xl leading-none select-none"
@@ -311,7 +311,7 @@ const LovePageView = () => {
       {isPremium && url && (
         <section className="relative z-10 px-5 sm:px-8 py-24 sm:py-32">
           <div className="max-w-3xl mx-auto">
-            <ChapterMark n="IV" title="Nossa trilha" theme={theme} muted={muted} hairline={hairlineSoft} />
+            <ChapterMark n="IV" title={ui.view.chapter4} chapterLabel={ui.view.chapters} theme={theme} muted={muted} hairline={hairlineSoft} />
             <div className="mt-12">
               {yt ? (
                 <div className="rounded-2xl overflow-hidden aspect-video shadow-soft">
@@ -344,9 +344,9 @@ const LovePageView = () => {
           <span>{issueLabel}</span>
           <span className="flex items-center gap-2">
             <Heart className={`h-3 w-3 ${theme.accent}`} style={{ fill: theme.accentHex }} />
-            feito com amor em <a href="/" className="underline-offset-4 hover:underline normal-case">My Love Page</a>
+            {ui.view.madeWithLove} <a href="/" className="underline-offset-4 hover:underline normal-case">My Love Page</a>
           </span>
-          <span>fim</span>
+          <span>{ui.view.end}</span>
         </div>
       </footer>
 
@@ -378,13 +378,13 @@ const LovePageView = () => {
 
 // Editorial chapter mark
 const ChapterMark = ({
-  n, title, theme, muted, hairline,
-}: { n: string; title: string; theme: ReturnType<typeof getTheme>; muted: string; hairline: string }) => (
+  n, title, chapterLabel, theme, muted, hairline,
+}: { n: string; title: string; chapterLabel: string; theme: ReturnType<typeof getTheme>; muted: string; hairline: string }) => (
   <div className={`flex items-end justify-between gap-6 border-b ${hairline} pb-5`}>
     <div className="flex items-baseline gap-5">
       <span className={`font-display text-5xl sm:text-6xl ${theme.accent}`} style={{ color: theme.accentHex }}>{n}</span>
       <div>
-        <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>Capítulo</div>
+        <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>{chapterLabel}</div>
         <h2 className="font-display text-2xl sm:text-3xl tracking-tight">{title}</h2>
       </div>
     </div>

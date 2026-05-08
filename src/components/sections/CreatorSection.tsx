@@ -23,7 +23,7 @@ const MAX_BASIC = 4;
 const MAX_PREMIUM = 8;
 
 export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPlan, prices }: Props) => {
-  const { t } = useI18n();
+  const { t, ui } = useI18n();
   const navigate = useNavigate();
   const { user } = useAuth();
   const { save } = useLovePages();
@@ -44,7 +44,7 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
     const next = [...data.photos, ...urls].slice(0, photoLimit);
     update("photos", next);
     if (Array.from(files).length > arr.length) {
-      toast.warning(`Limite de ${photoLimit} fotos para o plano ${plan === "premium" ? "Premium" : "Básico"}`);
+      toast.warning(ui.creator.photoLimitWarn(photoLimit, plan === "premium" ? t.plans.premium : t.plans.basic));
     }
   };
 
@@ -52,7 +52,7 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
 
   const persist = async (publish: boolean) => {
     if (!user) {
-      toast.info("Faça login para salvar sua página");
+      toast.info(ui.creator.needLogin);
       navigate("/auth");
       return;
     }
@@ -63,12 +63,12 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
       if (row.slug) setSlug(row.slug);
       // Replace blob URLs with persistent ones
       setData({ ...data, themeId, photos });
-      toast.success(publish ? "Página publicada!" : "Rascunho salvo", {
+      toast.success(publish ? ui.creator.published : ui.creator.drafted, {
         description: publish && row.slug ? `${window.location.origin}/p/${row.slug}` : undefined,
       });
       if (publish) navigate("/account");
     } catch (e: any) {
-      toast.error(e.message || "Erro ao salvar");
+      toast.error(e.message || ui.creator.saveError);
     } finally {
       setBusy(false);
     }
@@ -96,12 +96,12 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
           <div className="rounded-3xl bg-card/80 backdrop-blur border border-border p-6 sm:p-8 shadow-soft space-y-5">
             <div>
               <label className={labelBase}>{t.creator.coupleName}</label>
-              <input className={inputBase} value={data.title} onChange={(e) => update("title", e.target.value)} maxLength={60} placeholder="Maria & João" />
+              <input className={inputBase} value={data.title} onChange={(e) => update("title", e.target.value)} maxLength={60} placeholder={ui.creator.placeholderTitle} />
             </div>
             <div className="grid sm:grid-cols-2 gap-4">
               <div>
                 <label className={labelBase}>{t.creator.honoree}</label>
-                <input className={inputBase} value={data.honoree} onChange={(e) => update("honoree", e.target.value)} maxLength={40} placeholder="Maria" />
+                <input className={inputBase} value={data.honoree} onChange={(e) => update("honoree", e.target.value)} maxLength={40} placeholder={ui.creator.placeholderHonoree} />
               </div>
               <div>
                 <label className={labelBase}>{t.creator.startDate}</label>
@@ -110,11 +110,11 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
             </div>
             <div>
               <label className={labelBase}>{t.creator.message}</label>
-              <textarea className={`${inputBase} resize-none`} rows={3} value={data.message} onChange={(e) => update("message", e.target.value)} maxLength={300} placeholder="Te amo desde o primeiro segundo..." />
+              <textarea className={`${inputBase} resize-none`} rows={3} value={data.message} onChange={(e) => update("message", e.target.value)} maxLength={300} placeholder={ui.creator.placeholderMessage} />
             </div>
             <div>
               <label className={labelBase}>{t.creator.finalMessage}</label>
-              <input className={inputBase} value={data.finalMessage || ""} onChange={(e) => update("finalMessage", e.target.value)} maxLength={120} placeholder="Para sempre seu(sua)" />
+              <input className={inputBase} value={data.finalMessage || ""} onChange={(e) => update("finalMessage", e.target.value)} maxLength={120} placeholder={ui.creator.placeholderFinal} />
             </div>
 
             {/* Photos */}
@@ -149,7 +149,7 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
                 value={data.music || ""}
                 onChange={(e) => update("music", e.target.value)}
                 disabled={plan !== "premium"}
-                placeholder={plan === "premium" ? "Perfect — Ed Sheeran" : t.creator.premiumOnly}
+                placeholder={plan === "premium" ? ui.creator.placeholderMusic : t.creator.premiumOnly}
               />
             </div>
 
@@ -157,7 +157,7 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
               <label className={labelBase}>{t.creator.slug}</label>
               <div className="flex items-center rounded-xl border border-border bg-background/60 overflow-hidden">
                 <span className="px-3 py-3 text-xs text-foreground/50 border-r border-border">mylovepage.com/</span>
-                <input className="flex-1 px-3 py-3 text-sm bg-transparent focus:outline-none" value={slug} onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))} placeholder="maria-e-joao" maxLength={32} />
+                <input className="flex-1 px-3 py-3 text-sm bg-transparent focus:outline-none" value={slug} onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, ""))} placeholder={ui.creator.placeholderSlug} maxLength={32} />
               </div>
             </div>
 
@@ -198,7 +198,7 @@ export const CreatorSection = ({ themeId, setThemeId, data, setData, plan, setPl
                 disabled={busy}
                 className="rounded-xl border border-border bg-background px-5 py-4 text-sm font-semibold hover:bg-accent transition-colors disabled:opacity-60"
               >
-                Salvar rascunho
+                {ui.creator.saveDraft}
               </button>
             </div>
           </div>
