@@ -5,8 +5,10 @@ import { useLovePages, LovePageRow, resolveImageUrl } from "@/hooks/useLovePages
 import { getTheme } from "@/data/themes";
 import { CreativeCounter } from "@/components/CreativeCounter";
 import { toast } from "sonner";
+import { useI18n } from "@/i18n/I18nContext";
 
 const LovePageView = () => {
+  const { ui } = useI18n();
   const { slug = "" } = useParams();
   const { getBySlug, getImages } = useLovePages();
   const [row, setRow] = useState<LovePageRow | null>(null);
