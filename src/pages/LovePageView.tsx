@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { Loader2, Heart, Music, Share2, QrCode, X, ChevronLeft, ChevronRight } from "lucide-react";
+import { Loader2, Heart, Music, Share2, X, ChevronLeft, ChevronRight, ArrowDown } from "lucide-react";
 import { useLovePages, LovePageRow, resolveImageUrl } from "@/hooks/useLovePages";
 import { getTheme } from "@/data/themes";
 import { CreativeCounter } from "@/components/CreativeCounter";
@@ -39,7 +39,6 @@ const LovePageView = () => {
     return () => { alive = false; };
   }, [slug, getBySlug, getImages]);
 
-  // Update document title for SEO
   useEffect(() => {
     if (row) document.title = `${row.title || "Nossa história"} • My Love Page`;
   }, [row]);
@@ -63,6 +62,10 @@ const LovePageView = () => {
   const theme = getTheme(row.theme);
   const isDark = theme.vibe === "dark";
   const muted = isDark ? "text-white/55" : "text-black/50";
+  const subtle = isDark ? "text-white/70" : "text-black/65";
+  const hairline = isDark ? "border-white/15" : "border-black/15";
+  const hairlineSoft = isDark ? "border-white/10" : "border-black/10";
+  const surface = isDark ? "bg-white/[0.04]" : "bg-black/[0.03]";
   const isPremium = row.plan_type === "premium";
   const startDate = row.relationship_date || new Date().toISOString();
 
@@ -80,12 +83,24 @@ const LovePageView = () => {
     toast.success("Link copiado!");
   };
 
+  // Issue/Date label for editorial feel
+  const startD = new Date(startDate);
+  const issueLabel = `VOL. ${startD.getFullYear()} · Nº ${String(startD.getMonth() + 1).padStart(2, "0")}`;
+
+  // Capítulos (chapters) for the narrative scroll
+  const chapters: { n: string; title: string; show: boolean }[] = [
+    { n: "I", title: "O começo", show: true },
+    { n: "II", title: "Nossos momentos", show: photos.length > 0 },
+    { n: "III", title: "Carta para você", show: !!row.main_message },
+    { n: "IV", title: "Nossa trilha", show: isPremium && !!url },
+  ].filter((c) => c.show);
+
   return (
     <div className={`min-h-screen ${theme.bg} ${theme.text} ${theme.font} relative overflow-x-hidden`}>
-      {/* Animations */}
+      {/* Floating hearts (premium) */}
       {isPremium && (
         <div className="fixed inset-0 pointer-events-none z-0">
-          {Array.from({ length: 16 }).map((_, i) => (
+          {Array.from({ length: 14 }).map((_, i) => (
             <Heart
               key={i}
               className="floating-heart"
@@ -117,100 +132,222 @@ const LovePageView = () => {
         </div>
       )}
 
-      {/* Floating share button */}
-      <div className="fixed top-4 right-4 z-40 flex gap-2">
-        <button onClick={share} className={`inline-flex items-center gap-2 rounded-full px-4 py-2 text-xs backdrop-blur ${
-          isDark ? "bg-white/10 hover:bg-white/20 text-white border border-white/15" : "bg-black/5 hover:bg-black/10 text-black border border-black/10"
-        }`}>
-          <Share2 className="h-3.5 w-3.5" /> Compartilhar
-        </button>
-      </div>
+      {/* Top editorial bar */}
+      <header className={`fixed top-0 inset-x-0 z-40 backdrop-blur-md border-b ${hairlineSoft} ${
+        isDark ? "bg-black/30" : "bg-white/50"
+      }`}>
+        <div className="max-w-7xl mx-auto px-5 sm:px-8 py-3 flex items-center justify-between gap-4 text-[10px] sm:text-[11px] uppercase tracking-[0.35em]">
+          <div className="flex items-center gap-3 min-w-0">
+            <Heart className={`h-3.5 w-3.5 ${theme.accent} shrink-0`} style={{ fill: theme.accentHex }} />
+            <span className={`${muted} truncate`}>{issueLabel}</span>
+          </div>
+          <div className={`hidden md:block ${muted} truncate`}>{row.title || "Nossa história"}</div>
+          <button
+            onClick={share}
+            className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 border ${hairline} hover:opacity-80 transition`}
+          >
+            <Share2 className="h-3 w-3" /> <span className="hidden sm:inline">Compartilhar</span>
+          </button>
+        </div>
+      </header>
 
-      {/* Hero — fullscreen */}
-      <section className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6 py-16 text-center">
-        <Heart className={`h-12 w-12 heartbeat ${theme.accent}`} style={{ fill: theme.accentHex }} />
-        <h1 className="mt-6 font-display font-bold text-5xl sm:text-7xl md:text-8xl leading-[0.95] tracking-tight">
-          {row.title || "Eu & Você"}
-        </h1>
-        {row.recipient_name && (
-          <p className={`mt-6 text-lg sm:text-xl italic ${theme.accent}`}>♡ {row.recipient_name}</p>
-        )}
-        <p className={`mt-12 text-xs uppercase tracking-[0.5em] ${muted}`}>role para baixo</p>
-        <div className={`mt-3 h-12 w-px ${isDark ? "bg-white/30" : "bg-black/20"} animate-pulse`} />
+      {/* COVER — editorial magazine */}
+      <section className="relative z-10 min-h-screen pt-24 pb-16 px-5 sm:px-8 flex flex-col">
+        <div className="max-w-7xl w-full mx-auto flex-1 grid lg:grid-cols-12 gap-10 items-center">
+          {/* Left rail — meta */}
+          <div className="lg:col-span-3 order-2 lg:order-1 space-y-8">
+            <div>
+              <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>Edição</div>
+              <div className="mt-1 font-display text-3xl">{startD.getFullYear()}</div>
+            </div>
+            <div className={`h-px w-16 ${isDark ? "bg-white/30" : "bg-black/25"}`} />
+            <div>
+              <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>Capítulos</div>
+              <ol className="mt-3 space-y-2">
+                {chapters.map((c) => (
+                  <li key={c.n} className="flex items-baseline gap-3 text-sm">
+                    <span className={`font-display text-base ${theme.accent}`}>{c.n}</span>
+                    <span className={subtle}>{c.title}</span>
+                  </li>
+                ))}
+              </ol>
+            </div>
+          </div>
+
+          {/* Center — title block */}
+          <div className="lg:col-span-6 order-1 lg:order-2 text-center">
+            <div className={`inline-flex items-center gap-3 text-[10px] uppercase tracking-[0.5em] ${muted}`}>
+              <span className={`h-px w-8 ${isDark ? "bg-white/40" : "bg-black/30"}`} />
+              Uma história de amor
+              <span className={`h-px w-8 ${isDark ? "bg-white/40" : "bg-black/30"}`} />
+            </div>
+
+            <h1 className="mt-8 font-display font-bold text-6xl sm:text-8xl md:text-[9rem] leading-[0.85] tracking-tight">
+              {(row.title || "Eu & Você").split(/\s*&\s*|\s+e\s+/i).map((part, i, arr) => (
+                <span key={i} className="block">
+                  {i === 1 && <span className={`italic font-normal ${theme.accent}`}>&nbsp;&&nbsp;</span>}
+                  <span className={i === 1 ? "italic" : ""}>{part}</span>
+                </span>
+              ))}
+            </h1>
+
+            {row.recipient_name && (
+              <p className={`mt-10 text-base sm:text-lg ${subtle}`}>
+                <span className={`text-[10px] uppercase tracking-[0.4em] ${muted} block mb-2`}>dedicado a</span>
+                <span className={`font-display text-2xl sm:text-3xl ${theme.accent}`}>♡ {row.recipient_name}</span>
+              </p>
+            )}
+          </div>
+
+          {/* Right rail — featured photo / monogram */}
+          <div className="lg:col-span-3 order-3 hidden lg:block">
+            {photos[0] ? (
+              <div className="relative">
+                <div className={`absolute -inset-2 rounded-2xl ${surface}`} />
+                <img src={photos[0]} alt="" className="relative aspect-[3/4] w-full object-cover rounded-xl" />
+                <div className={`mt-3 text-[10px] uppercase tracking-[0.3em] ${muted}`}>fig. 01 — capa</div>
+              </div>
+            ) : (
+              <div className={`aspect-[3/4] w-full rounded-xl border ${hairline} grid place-items-center`}>
+                <div className="text-center">
+                  <Heart className={`h-12 w-12 mx-auto heartbeat ${theme.accent}`} style={{ fill: theme.accentHex }} />
+                  <div className={`mt-3 font-display text-4xl italic ${theme.accent}`}>♡</div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Footer of cover */}
+        <div className={`max-w-7xl w-full mx-auto mt-10 flex items-end justify-between gap-6 border-t ${hairlineSoft} pt-5`}>
+          <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>{issueLabel}</div>
+          <div className={`flex items-center gap-2 text-[10px] uppercase tracking-[0.4em] ${muted}`}>
+            <span>continuar</span>
+            <ArrowDown className="h-3 w-3 animate-bounce" />
+          </div>
+          <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>My Love Page</div>
+        </div>
       </section>
 
-      {/* Counter */}
-      <section className="relative z-10 px-6 py-20 max-w-4xl mx-auto">
-        <p className={`text-center text-xs uppercase tracking-[0.4em] ${muted} mb-10`}>Nosso tempo</p>
-        <CreativeCounter startDate={startDate} themeId={theme.id} accentHex={theme.accentHex} isDark={isDark} />
+      {/* CHAPTER I — Counter */}
+      <section className="relative z-10 px-5 sm:px-8 py-24 sm:py-32">
+        <div className="max-w-5xl mx-auto">
+          <ChapterMark n="I" title="O começo" theme={theme} muted={muted} hairline={hairlineSoft} />
+          <div className="mt-12">
+            <CreativeCounter startDate={startDate} themeId={theme.id} accentHex={theme.accentHex} isDark={isDark} />
+          </div>
+        </div>
       </section>
 
-      {/* Photos */}
+      {/* CHAPTER II — Photos (mosaic) */}
       {photos.length > 0 && (
-        <section className="relative z-10 px-6 py-20 max-w-6xl mx-auto">
-          <p className={`text-center text-xs uppercase tracking-[0.4em] ${muted} mb-10`}>Nossos momentos</p>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
-            {photos.map((src, i) => (
-              <button
-                key={i}
-                onClick={() => setLightbox(i)}
-                className={`group relative aspect-square rounded-2xl overflow-hidden ${
-                  isDark ? "bg-white/5 border border-white/10" : "bg-black/5 border border-black/5"
-                }`}
-              >
-                <img src={src} alt={`Memória ${i + 1}`} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
-              </button>
-            ))}
+        <section className="relative z-10 px-5 sm:px-8 py-24 sm:py-32">
+          <div className="max-w-7xl mx-auto">
+            <ChapterMark n="II" title="Nossos momentos" theme={theme} muted={muted} hairline={hairlineSoft} />
+            <div className="mt-12 grid grid-cols-12 auto-rows-[110px] sm:auto-rows-[140px] md:auto-rows-[170px] gap-3 sm:gap-4">
+              {photos.map((src, i) => {
+                // Editorial mosaic pattern
+                const patterns = [
+                  "col-span-7 row-span-3",
+                  "col-span-5 row-span-2",
+                  "col-span-5 row-span-2",
+                  "col-span-4 row-span-2",
+                  "col-span-4 row-span-3",
+                  "col-span-4 row-span-2",
+                  "col-span-6 row-span-2",
+                  "col-span-6 row-span-2",
+                ];
+                const cls = patterns[i % patterns.length];
+                return (
+                  <button
+                    key={i}
+                    onClick={() => setLightbox(i)}
+                    className={`group relative overflow-hidden rounded-xl ${surface} ${cls}`}
+                  >
+                    <img
+                      src={src}
+                      alt={`Memória ${i + 1}`}
+                      className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className={`absolute bottom-2 left-2 text-[9px] uppercase tracking-[0.3em] px-2 py-0.5 rounded-full backdrop-blur ${
+                      isDark ? "bg-black/40 text-white/80" : "bg-white/70 text-black/70"
+                    }`}>
+                      fig. {String(i + 1).padStart(2, "0")}
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
           </div>
         </section>
       )}
 
-      {/* Message */}
+      {/* CHAPTER III — Letter */}
       {row.main_message && (
-        <section className="relative z-10 px-6 py-24 max-w-3xl mx-auto text-center">
-          <p className="font-display text-2xl sm:text-4xl leading-relaxed italic">
-            "{row.main_message}"
-          </p>
+        <section className="relative z-10 px-5 sm:px-8 py-24 sm:py-32">
+          <div className="max-w-3xl mx-auto">
+            <ChapterMark n="III" title="Carta para você" theme={theme} muted={muted} hairline={hairlineSoft} />
+            <div className={`mt-12 relative rounded-3xl border ${hairline} ${surface} p-8 sm:p-14`}>
+              <span
+                className="absolute -top-6 left-8 font-display text-8xl leading-none select-none"
+                style={{ color: theme.accentHex, opacity: 0.85 }}
+              >
+                "
+              </span>
+              <p className="font-display text-2xl sm:text-3xl md:text-4xl leading-[1.4] italic">
+                {row.main_message}
+              </p>
+              {row.final_message && (
+                <p className={`mt-10 text-right text-base sm:text-lg ${theme.accent} italic`}>
+                  — {row.final_message}
+                </p>
+              )}
+            </div>
+          </div>
         </section>
       )}
 
-      {/* Music */}
+      {/* CHAPTER IV — Music */}
       {isPremium && url && (
-        <section className="relative z-10 px-6 py-16 max-w-2xl mx-auto">
-          <p className={`text-center text-xs uppercase tracking-[0.4em] ${muted} mb-6`}>Nossa música</p>
-          {yt ? (
-            <div className="rounded-2xl overflow-hidden aspect-video">
-              <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${yt[1]}`} title="YouTube" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+        <section className="relative z-10 px-5 sm:px-8 py-24 sm:py-32">
+          <div className="max-w-3xl mx-auto">
+            <ChapterMark n="IV" title="Nossa trilha" theme={theme} muted={muted} hairline={hairlineSoft} />
+            <div className="mt-12">
+              {yt ? (
+                <div className="rounded-2xl overflow-hidden aspect-video shadow-soft">
+                  <iframe className="w-full h-full" src={`https://www.youtube.com/embed/${yt[1]}`} title="YouTube" allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen />
+                </div>
+              ) : spTrack ? (
+                <div className="rounded-2xl overflow-hidden">
+                  <iframe className="w-full" style={{ height: 152 }} src={`https://open.spotify.com/embed/track/${spTrack[1]}`} allow="encrypted-media" loading="lazy" />
+                </div>
+              ) : spOther ? (
+                <div className="rounded-2xl overflow-hidden">
+                  <iframe className="w-full" style={{ height: 232 }} src={`https://open.spotify.com/embed/${spOther[1]}/${spOther[2]}`} allow="encrypted-media" loading="lazy" />
+                </div>
+              ) : (
+                <div className={`flex items-center gap-4 rounded-2xl px-6 py-5 border ${hairline} ${surface}`}>
+                  <div className="h-12 w-12 rounded-full grid place-items-center shrink-0" style={{ backgroundColor: theme.accentHex }}>
+                    <Music className="h-5 w-5 text-white" />
+                  </div>
+                  <div className="text-sm font-medium truncate">{url}</div>
+                </div>
+              )}
             </div>
-          ) : spTrack ? (
-            <div className="rounded-2xl overflow-hidden">
-              <iframe className="w-full" style={{ height: 152 }} src={`https://open.spotify.com/embed/track/${spTrack[1]}`} allow="encrypted-media" loading="lazy" />
-            </div>
-          ) : spOther ? (
-            <div className="rounded-2xl overflow-hidden">
-              <iframe className="w-full" style={{ height: 232 }} src={`https://open.spotify.com/embed/${spOther[1]}/${spOther[2]}`} allow="encrypted-media" loading="lazy" />
-            </div>
-          ) : (
-            <div className={`flex items-center gap-3 rounded-2xl px-5 py-4 ${isDark ? "bg-white/5 border border-white/10" : "bg-black/5 border border-black/5"}`}>
-              <div className="h-10 w-10 rounded-full grid place-items-center" style={{ backgroundColor: theme.accentHex }}>
-                <Music className="h-4 w-4 text-white" />
-              </div>
-              <div className="text-sm font-medium truncate">{url}</div>
-            </div>
-          )}
+          </div>
         </section>
       )}
 
-      {/* Final message */}
-      {row.final_message && (
-        <section className="relative z-10 px-6 py-20 max-w-2xl mx-auto text-center">
-          <p className={`text-lg sm:text-2xl ${theme.accent}`}>— {row.final_message}</p>
-        </section>
-      )}
-
-      {/* Footer */}
-      <footer className="relative z-10 px-6 py-10 text-center">
-        <p className={`text-xs ${muted}`}>Feito com ♡ no <a href="/" className="underline hover:opacity-80">My Love Page</a></p>
+      {/* COLOPHON / Footer */}
+      <footer className="relative z-10 px-5 sm:px-8 py-16">
+        <div className={`max-w-7xl mx-auto border-t ${hairlineSoft} pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[10px] uppercase tracking-[0.4em] ${muted}`}>
+          <span>{issueLabel}</span>
+          <span className="flex items-center gap-2">
+            <Heart className={`h-3 w-3 ${theme.accent}`} style={{ fill: theme.accentHex }} />
+            feito com amor em <a href="/" className="underline-offset-4 hover:underline normal-case">My Love Page</a>
+          </span>
+          <span>fim</span>
+        </div>
       </footer>
 
       {/* Lightbox */}
@@ -230,10 +367,29 @@ const LovePageView = () => {
             </button>
           )}
           <img src={photos[lightbox]} alt="" className="max-h-[90vh] max-w-[92vw] object-contain" onClick={(e) => e.stopPropagation()} />
+          <div className="absolute bottom-4 left-0 right-0 text-center text-[10px] uppercase tracking-[0.4em] text-white/60">
+            fig. {String(lightbox + 1).padStart(2, "0")} / {String(photos.length).padStart(2, "0")}
+          </div>
         </div>
       )}
     </div>
   );
 };
+
+// Editorial chapter mark
+const ChapterMark = ({
+  n, title, theme, muted, hairline,
+}: { n: string; title: string; theme: ReturnType<typeof getTheme>; muted: string; hairline: string }) => (
+  <div className={`flex items-end justify-between gap-6 border-b ${hairline} pb-5`}>
+    <div className="flex items-baseline gap-5">
+      <span className={`font-display text-5xl sm:text-6xl ${theme.accent}`} style={{ color: theme.accentHex }}>{n}</span>
+      <div>
+        <div className={`text-[10px] uppercase tracking-[0.4em] ${muted}`}>Capítulo</div>
+        <h2 className="font-display text-2xl sm:text-3xl tracking-tight">{title}</h2>
+      </div>
+    </div>
+    <div className={`hidden sm:block text-[10px] uppercase tracking-[0.4em] ${muted}`}>—</div>
+  </div>
+);
 
 export default LovePageView;
