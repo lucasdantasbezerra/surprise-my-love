@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, ReactNode } from "react";
 import { Lang, LANGUAGES, LANGUAGE_META, translations, TranslationDict } from "./translations";
+import { UI, UiDict } from "./extras";
 
 interface Currency {
   code: string;
@@ -73,6 +74,7 @@ interface I18nValue {
   lang: Lang;
   setLang: (l: Lang) => void;
   t: TranslationDict;
+  ui: UiDict;
   rtl: boolean;
   currency: string;
   setCurrency: (c: string) => void;
@@ -116,6 +118,7 @@ export const I18nProvider = ({ children }: { children: ReactNode }) => {
       lang,
       setLang: setLangState,
       t: translations[lang],
+      ui: UI[lang] || UI.en,
       rtl: !!LANGUAGE_META[lang]?.rtl,
       currency,
       setCurrency: setCurrencyState,
